@@ -27,13 +27,13 @@ done
 if [ -n "$CHROME" ]; then say "Chrome (скриншоты сайтов)" "✓"; else say "Chrome (скриншоты сайтов)" "✗ нет (не обязателен для монтажа)"; fi
 if [ -d tools/node_modules/puppeteer-core ]; then say "node-зависимости tools/" "✓"; else say "node-зависимости tools/" "✗ нет"; miss+=("npm"); fi
 SK=0
-for d in .claude/skills "$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.codex/skills"; do
+for d in .agents/skills .claude/skills "$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.codex/skills"; do
   [ -f "$d/hyperframes-audio/scripts/carve.mjs" ] && SK=1
 done
 if [ $SK = 1 ]; then say "скиллы HyperFrames (музыка под голос)" "✓"; else say "скиллы HyperFrames (музыка под голос)" "✗ нет (желательно)"; miss+=("skills"); fi
 if [ -f studio/studio.json ] && [ -f studio/profile.md ]; then say "студия" "✓ настроена"; else say "студия" "— не настроена → в агенте: /setup-studio"; fi
 
-if [ ${#miss[@]} -eq 0 ]; then echo; echo "Всё готово. Открой папку в Claude Code и напиши /setup-studio (или /make-reel)."; exit 0; fi
+if [ ${#miss[@]} -eq 0 ]; then echo; echo "Всё готово. Открой папку в Claude Code или Codex и напиши «привет» — агент начнёт с анкеты."; exit 0; fi
 if [ $CHECK = 1 ]; then echo; echo "Не хватает: ${miss[*]} → запусти ./setup.sh"; exit 1; fi
 
 echo; echo "Ставлю недостающее…"

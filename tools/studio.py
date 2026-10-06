@@ -134,6 +134,17 @@ def check():
         if st["fonts"].get(role, "").lower() not in reg:
             print(f"⚠ шрифт {role} «{st['fonts'].get(role)}» не установлен → python3 tools/studio.py fonts")
             ok = False
+    ob = os.path.join(CM.STUDIO, "onboarding.md")
+    if os.path.exists(ob):
+        txt = open(ob, encoding="utf-8").read()
+        rows = [l for l in txt.splitlines() if l.startswith("| ") and l[2:3].isdigit()]
+        todo = [l.split("|")[1].strip() for l in rows if "⬜" in l]
+        wait = [l.split("|")[1].strip() for l in rows if "⏳" in l]
+        if todo:
+            print(f"⚠ анкета: не заданы вопросы {', '.join(todo)}")
+            ok = False
+        if wait:
+            print(f"… анкета: ждём ответ/материал по вопросам {', '.join(wait)}")
     if not os.path.exists(os.path.join(CM.STUDIO, "profile.md")):
         print("⚠ нет studio/profile.md — агенту не на что опираться в хуках и сценах (/setup-studio)")
         ok = False

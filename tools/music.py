@@ -22,7 +22,8 @@ import argparse, array, json, math, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as CM  # noqa: E402
 
-RESOLVE = next((p for p in (os.path.join(CM.ROOT, ".claude/skills/media-use/scripts/resolve.mjs"),
+RESOLVE = next((p for p in (os.path.join(CM.ROOT, ".agents/skills/media-use/scripts/resolve.mjs"),
+                            os.path.join(CM.ROOT, ".claude/skills/media-use/scripts/resolve.mjs"),
                             os.path.expanduser("~/.claude/skills/media-use/scripts/resolve.mjs"),
                             os.path.expanduser("~/.agents/skills/media-use/scripts/resolve.mjs"))
                 if os.path.exists(p)), None)
