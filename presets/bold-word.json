@@ -1,0 +1,7 @@
+{"_preset": {"title": "Слово за словом", "description": "Динамичный TikTok-стиль: одно крупное слово за раз, капс, бирюзовый акцент, Rubik."},
+ "name": "Слово за словом",
+ "colors": {"accent": "#00E5FF", "accent_ink": "#05121A", "ink": "#05121A", "dark": "#05121A"},
+ "fonts": {"head": "Rubik", "body": "Rubik", "head_weight": 800},
+ "captions": {"style": "word", "uppercase": true, "size": 64, "y_full": 1240},
+ "montage": {"pace": "dynamic"},
+ "sound": {"music_style": "epic"}}

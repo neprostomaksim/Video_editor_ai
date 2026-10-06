@@ -1,0 +1,566 @@
+{
+  "apple": {
+    "name": "Apple",
+    "aliases": [
+      "эпл"
+    ],
+    "file": "apple.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "artemis": {
+    "file": "artemis.png",
+    "name": "Artemis",
+    "source": "product",
+    "aliases": [
+      "артемис",
+      "артемида",
+      "artemis mcp"
+    ]
+  },
+  "capcut": {
+    "name": "CapCut",
+    "aliases": [
+      "капкут",
+      "кап кат"
+    ],
+    "file": "capcut.png",
+    "orig": "capcut.png",
+    "source": "library"
+  },
+  "chatgpt": {
+    "name": "ChatGPT",
+    "aliases": [
+      "чатгпт",
+      "чат гпт",
+      "чат gpt",
+      "gpt",
+      "openai",
+      "опенаи",
+      "гпт"
+    ],
+    "file": "chatgpt.png",
+    "orig": "chatgpt.png",
+    "source": "library"
+  },
+  "claude": {
+    "name": "Claude",
+    "aliases": [
+      "клод",
+      "клоуд",
+      "клода",
+      "клоде",
+      "claude code",
+      "клод код",
+      "anthropic",
+      "антропик",
+      "fable",
+      "sonnet",
+      "opus",
+      "haiku"
+    ],
+    "file": "claude.png",
+    "orig": "claude.png",
+    "source": "library"
+  },
+  "cline": {
+    "name": "Cline",
+    "aliases": [
+      "клайн"
+    ],
+    "file": "cline.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "codex": {
+    "name": "Codex",
+    "aliases": [
+      "кодекс"
+    ],
+    "file": "codex.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "composio": {
+    "file": "composio.png",
+    "name": "Composio",
+    "source": "product",
+    "aliases": [
+      "композио",
+      "compose",
+      "compose.io",
+      "компоуз",
+      "composio.dev"
+    ]
+  },
+  "copilot": {
+    "name": "Copilot",
+    "aliases": [
+      "копайлот"
+    ],
+    "file": "copilot.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "cursor": {
+    "name": "Cursor",
+    "aliases": [
+      "курсор"
+    ],
+    "file": "cursor.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "deepseek": {
+    "name": "DeepSeek",
+    "aliases": [
+      "дипсик"
+    ],
+    "file": "deepseek.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "dots": {
+    "file": "dots.png",
+    "name": "dots",
+    "source": "product",
+    "aliases": [
+      "дотс",
+      "dots openai",
+      "dot",
+      "дот"
+    ]
+  },
+  "elevenlabs": {
+    "name": "ElevenLabs",
+    "aliases": [
+      "элевенлабс"
+    ],
+    "file": "elevenlabs.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "figma": {
+    "name": "Figma",
+    "aliases": [
+      "фигма"
+    ],
+    "file": "figma.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "flow": {
+    "name": "Flow",
+    "aliases": [
+      "google flow",
+      "флоу"
+    ],
+    "file": "flow.png",
+    "orig": "flow1.png",
+    "source": "library"
+  },
+  "gemini": {
+    "name": "Gemini",
+    "aliases": [
+      "джемини",
+      "гемини",
+      "gemini cli"
+    ],
+    "file": "gemini.png",
+    "orig": "gemini.png",
+    "source": "library"
+  },
+  "github": {
+    "name": "GitHub",
+    "aliases": [
+      "гитхаб",
+      "гитхабе",
+      "гитхаба",
+      "гит хаб",
+      "git hub"
+    ],
+    "file": "github.png",
+    "orig": "Github.png",
+    "source": "library"
+  },
+  "gmail": {
+    "file": "gmail.png",
+    "name": "Gmail",
+    "source": "product",
+    "aliases": [
+      "гмейл",
+      "джимейл",
+      "gmail"
+    ],
+    "mark_only": true
+  },
+  "google": {
+    "name": "Google",
+    "aliases": [
+      "гугл"
+    ],
+    "file": "google.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "googledrive": {
+    "file": "googledrive.png",
+    "name": "Google Drive",
+    "source": "product",
+    "aliases": [
+      "гугл диск",
+      "google диск",
+      "диск",
+      "drive"
+    ]
+  },
+  "grok": {
+    "name": "Grok",
+    "aliases": [
+      "грок"
+    ],
+    "file": "grok.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "groq": {
+    "name": "Groq",
+    "aliases": [
+      "грок ai",
+      "groq cloud"
+    ],
+    "file": "groq.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "heygen": {
+    "name": "HeyGen",
+    "aliases": [
+      "хейген",
+      "хей ген"
+    ],
+    "file": "heygen.png",
+    "orig": "heygen.png",
+    "source": "library"
+  },
+  "higgsfield": {
+    "name": "Higgsfield",
+    "aliases": [
+      "хигсфилд",
+      "хиггсфилд"
+    ],
+    "file": "higgsfield.png",
+    "orig": "higgsfield.png",
+    "source": "library"
+  },
+  "huggingface": {
+    "name": "Hugging Face",
+    "aliases": [
+      "хаггинг фейс"
+    ],
+    "file": "huggingface.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "kimi": {
+    "name": "Kimi",
+    "aliases": [
+      "кими",
+      "кимик",
+      "moonshot"
+    ],
+    "file": "kimi.png",
+    "orig": "kimi 1.png",
+    "source": "library"
+  },
+  "kling": {
+    "name": "Kling AI",
+    "aliases": [
+      "клинг",
+      "kling ai"
+    ],
+    "file": "kling.png",
+    "orig": "kling 1.png",
+    "source": "library"
+  },
+  "lovable": {
+    "name": "Lovable",
+    "aliases": [
+      "лавабл"
+    ],
+    "file": "lovable.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "manus": {
+    "name": "Manus",
+    "aliases": [
+      "манус"
+    ],
+    "file": "manus.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "mcp": {
+    "name": "MCP",
+    "aliases": [
+      "эмсипи"
+    ],
+    "file": "mcp.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "meta": {
+    "name": "Meta",
+    "aliases": [
+      "мета"
+    ],
+    "file": "meta.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "microsoft": {
+    "name": "Microsoft",
+    "aliases": [
+      "майкрософт"
+    ],
+    "file": "microsoft.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "midjourney": {
+    "name": "Midjourney",
+    "aliases": [
+      "миджорни",
+      "мидджорни",
+      "мид джорни"
+    ],
+    "file": "midjourney.png",
+    "orig": "midjouney.png",
+    "source": "library"
+  },
+  "minimax": {
+    "name": "MiniMax",
+    "aliases": [
+      "минимакс",
+      "hailuo"
+    ],
+    "file": "minimax.png",
+    "orig": "minimax.png",
+    "source": "library"
+  },
+  "mistral": {
+    "name": "Mistral",
+    "aliases": [
+      "мистраль"
+    ],
+    "file": "mistral.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "n8n": {
+    "name": "n8n",
+    "aliases": [
+      "н8н"
+    ],
+    "file": "n8n.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "nano-banana": {
+    "name": "Nano Banana",
+    "aliases": [
+      "нано банана",
+      "nanobanana"
+    ],
+    "file": "nano-banana.png",
+    "orig": "nano banana.png",
+    "source": "library"
+  },
+  "notebooklm": {
+    "name": "NotebookLM",
+    "aliases": [
+      "ноутбук лм",
+      "ноутбуклм",
+      "notebook lm"
+    ],
+    "file": "notebooklm.png",
+    "orig": "notebooklm.png",
+    "source": "library"
+  },
+  "notion": {
+    "name": "Notion",
+    "aliases": [
+      "ноушн"
+    ],
+    "file": "notion.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "npm": {
+    "file": "npm.png",
+    "name": "npm",
+    "source": "product",
+    "aliases": [
+      "нпм",
+      "npmjs",
+      "npm registry"
+    ]
+  },
+  "ollama": {
+    "name": "Ollama",
+    "aliases": [
+      "оллама"
+    ],
+    "file": "ollama.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "openrouter": {
+    "name": "OpenRouter",
+    "aliases": [
+      "опенроутер"
+    ],
+    "file": "openrouter.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "perplexity": {
+    "name": "Perplexity",
+    "aliases": [
+      "перплексити"
+    ],
+    "file": "perplexity.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "qwen": {
+    "name": "Qwen",
+    "aliases": [
+      "квен"
+    ],
+    "file": "qwen.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "recordly": {
+    "file": "recordly.png",
+    "name": "Recordly",
+    "source": "product",
+    "aliases": [
+      "рекордли",
+      "рекордлай",
+      "recordly"
+    ],
+    "bare": true
+  },
+  "replit": {
+    "name": "Replit",
+    "aliases": [
+      "реплит"
+    ],
+    "file": "replit.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "runway": {
+    "name": "Runway",
+    "aliases": [
+      "ранвей"
+    ],
+    "file": "runway.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "slack": {
+    "file": "slack.png",
+    "name": "Slack",
+    "source": "product",
+    "aliases": [
+      "слак",
+      "slack"
+    ],
+    "mark_only": true
+  },
+  "suno": {
+    "name": "Suno",
+    "aliases": [
+      "суно"
+    ],
+    "file": "suno.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "teams": {
+    "file": "teams.png",
+    "name": "Microsoft Teams",
+    "source": "product",
+    "aliases": [
+      "тимс",
+      "teams",
+      "microsoft teams"
+    ],
+    "mark_only": true
+  },
+  "v0": {
+    "name": "v0",
+    "aliases": [
+      "ви зеро"
+    ],
+    "file": "v0.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "veo": {
+    "name": "Veo",
+    "aliases": [
+      "вео",
+      "veo 3"
+    ],
+    "file": "veo.png",
+    "orig": "veo.png",
+    "source": "library"
+  },
+  "vercel": {
+    "name": "Vercel",
+    "aliases": [
+      "версел"
+    ],
+    "file": "vercel.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "windsurf": {
+    "name": "Windsurf",
+    "aliases": [
+      "виндсерф"
+    ],
+    "file": "windsurf.png",
+    "source": "lobehub",
+    "mark_only": true
+  },
+  "youtube": {
+    "file": "youtube.png",
+    "name": "YouTube",
+    "source": "product",
+    "aliases": [
+      "ютуб",
+      "ютюб",
+      "youtube"
+    ],
+    "mark_only": true
+  },
+  "z-ai": {
+    "name": "Z.ai",
+    "aliases": [
+      "glm",
+      "zhipu",
+      "жипу",
+      "зет аи",
+      "z ai"
+    ],
+    "file": "z-ai.png",
+    "orig": "z ai.png",
+    "source": "library"
+  }
+}

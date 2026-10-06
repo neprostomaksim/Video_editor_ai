@@ -1,0 +1,42 @@
+{
+  "_comment": "Базовые значения движка. НЕ редактируй — свой стиль задаётся в studio/studio.json (только то, что отличается).",
+  "name": "Базовый",
+  "language": "ru",
+  "colors": {
+    "accent": "#FFD43B",
+    "accent_ink": "#111111",
+    "bg": "#F5F5F2",
+    "card": "#FFFFFF",
+    "ink": "#111111",
+    "muted": "#77776F",
+    "line": "#E4E4DE",
+    "dark": "#111111",
+    "dark_ink": "#F4F4F0"
+  },
+  "fonts": {"head": "Montserrat", "body": "Montserrat", "mono": "JetBrains Mono", "head_weight": 800, "title_case": "uppercase"},
+  "shape": {"radius": 18, "plate": "dark"},
+  "captions": {
+    "enabled": true,
+    "style": "box",
+    "max_words": 3,
+    "max_chars": 20,
+    "size": 58,
+    "weight": 800,
+    "uppercase": false,
+    "text": "#FFFFFF",
+    "active": "accent",
+    "active_ink": "accent_ink",
+    "box": "rgba(8,8,9,.92)",
+    "radius": 18,
+    "stroke": "#000000",
+    "y_full": 1360,
+    "y_split": "seam"
+  },
+  "cta": {"enabled": true, "line1": "напиши", "line3": "в комментарии", "box": "rgba(8,8,9,.94)", "text": "#FFFFFF",
+          "word_color": "accent", "word_font": "mono"},
+  "layout": {"split_h": 1010, "split_radius": 44},
+  "source": {"type": "talking_head", "full_pos": "50% 24%", "split_pos": "50% 40%", "face_top": 540,
+             "jumpcuts": true, "jump_scale": 1.1},
+  "sound": {"sfx": true, "sfx_volume": 1.0, "music": true, "music_style": "electronic", "music_mood": ""},
+  "montage": {"pace": "standard", "hook_style": "split", "split": true, "full_graphics": true, "punches": true}
+}

@@ -1,0 +1,25 @@
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+models/
+
+# работа клиента — личное, не для общего репозитория
+inbox/*
+!inbox/README.md
+videos/*
+!videos/README.md
+studio/*
+!studio/README.md
+!studio/references/
+studio/references/*
+!studio/references/.gitkeep
+!studio/logos/
+studio/logos/*
+!studio/logos/.gitkeep
+!studio/fonts/
+studio/fonts/*
+!studio/fonts/.gitkeep
+!studio/music/
+studio/music/*
+!studio/music/.gitkeep

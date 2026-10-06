@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 tools/*)",
+      "Bash(python3 engine/*)",
+      "Bash(node tools/*)",
+      "Bash(npx hyperframes *)",
+      "Bash(npx -y hyperframes *)",
+      "Bash(./setup.sh*)",
+      "Bash(ffprobe *)"
+    ]
+  }
+}

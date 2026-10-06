@@ -1,0 +1,76 @@
+{
+ "Montserrat": [
+  {
+   "file": "Mont-400-lat.woff2",
+   "weight": 400,
+   "range": "LAT"
+  },
+  {
+   "file": "Mont-400-cyr.woff2",
+   "weight": 400,
+   "range": "CYR"
+  },
+  {
+   "file": "Mont-500-lat.woff2",
+   "weight": 500,
+   "range": "LAT"
+  },
+  {
+   "file": "Mont-500-cyr.woff2",
+   "weight": 500,
+   "range": "CYR"
+  },
+  {
+   "file": "Mont-600-lat.woff2",
+   "weight": 600,
+   "range": "LAT"
+  },
+  {
+   "file": "Mont-600-cyr.woff2",
+   "weight": 600,
+   "range": "CYR"
+  },
+  {
+   "file": "Mont-700-lat.woff2",
+   "weight": 700,
+   "range": "LAT"
+  },
+  {
+   "file": "Mont-700-cyr.woff2",
+   "weight": 700,
+   "range": "CYR"
+  },
+  {
+   "file": "Mont-800-lat.woff2",
+   "weight": 800,
+   "range": "LAT"
+  },
+  {
+   "file": "Mont-800-cyr.woff2",
+   "weight": 800,
+   "range": "CYR"
+  }
+ ],
+ "JetBrains Mono": [
+  {
+   "file": "JBMono-400-lat.woff2",
+   "weight": "100 700",
+   "range": "LAT"
+  },
+  {
+   "file": "JBMono-400-cyr.woff2",
+   "weight": "100 700",
+   "range": "CYR"
+  },
+  {
+   "file": "JBMono-800-lat.woff2",
+   "weight": 800,
+   "range": "LAT"
+  },
+  {
+   "file": "JBMono-800-cyr.woff2",
+   "weight": 800,
+   "range": "CYR"
+  }
+ ]
+}

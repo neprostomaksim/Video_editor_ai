@@ -1,0 +1,8 @@
+{"_preset": {"title": "Неон", "description": "Тёмная графика, розовый неон, слово подсвечивается плашкой, заголовки Unbounded, субтитры капсом."},
+ "name": "Неон",
+ "colors": {"accent": "#FF2E88", "accent_ink": "#FFFFFF", "bg": "#121218", "card": "#1C1C26", "ink": "#F5F5FA",
+            "muted": "#9A9AB0", "line": "#2C2C3A", "dark": "#0A0A0F", "dark_ink": "#F5F5FA"},
+ "fonts": {"head": "Unbounded", "body": "Montserrat", "head_weight": 800},
+ "captions": {"style": "highlight", "uppercase": true, "size": 56, "max_words": 2},
+ "cta": {"box": "#0A0A0F", "word_font": "head"},
+ "sound": {"music_style": "electronic"}}

@@ -1,0 +1,9 @@
+{"_preset": {"title": "Деловой", "description": "Эксперт, B2B, финансы: синий акцент, Inter, белая плашка субтитров с тёмным текстом, без капса."},
+ "name": "Деловой",
+ "colors": {"accent": "#2F6BFF", "accent_ink": "#FFFFFF", "bg": "#F4F6FA", "card": "#FFFFFF", "ink": "#0E1A2B",
+            "muted": "#6B778C", "line": "#E1E6EF", "dark": "#0E1A2B", "dark_ink": "#F4F6FA"},
+ "fonts": {"head": "Inter", "body": "Inter", "head_weight": 800, "title_case": "none"},
+ "shape": {"radius": 14},
+ "captions": {"style": "box", "box": "#FFFFFF", "text": "#0E1A2B", "active": "accent", "size": 54, "radius": 14},
+ "cta": {"box": "#FFFFFF", "text": "#0E1A2B", "word_font": "head"},
+ "sound": {"music_style": "electronic"}}

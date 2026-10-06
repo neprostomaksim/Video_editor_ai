@@ -1,0 +1,9 @@
+{"_preset": {"title": "Тёплый лайфстайл", "description": "Блог о жизни, красоте, еде, психологии: коралловый акцент, кремовый фон, антиква Playfair в заголовках, субтитры с обводкой."},
+ "name": "Тёплый лайфстайл",
+ "colors": {"accent": "#FF7A59", "accent_ink": "#FFFFFF", "bg": "#FFF6EE", "card": "#FFFFFF", "ink": "#2B1B14",
+            "muted": "#8C766A", "line": "#F0E2D6", "dark": "#2B1B14", "dark_ink": "#FFF6EE"},
+ "fonts": {"head": "Playfair Display", "body": "Montserrat", "head_weight": 800, "title_case": "none"},
+ "shape": {"radius": 26},
+ "captions": {"style": "outline", "size": 60, "weight": 800, "active": "accent", "stroke": "#2B1B14"},
+ "cta": {"box": "#2B1B14", "word_font": "head"},
+ "sound": {"music_style": "electronic", "music_mood": "warm acoustic lifestyle, light percussion, positive"}}

@@ -1,0 +1,4 @@
+{"_preset": {"title": "Лайм-тех", "description": "Тех-блог про ИИ: лаймовый акцент, Montserrat, кодовое слово моноширинным. Стиль, на котором движок обкатан."},
+ "name": "Лайм-тех",
+ "colors": {"accent": "#C8F03C", "accent_ink": "#0B0B0C", "ink": "#0B0B0C", "dark": "#0B0B0C"},
+ "sound": {"music_style": "funk"}}

@@ -1,0 +1,11 @@
+{
+  "name": "hf-tools",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "^25.12.0"
+  },
+  "devDependencies": {
+    "@hyperframes/core": "^0.8.78"
+  }
+}
