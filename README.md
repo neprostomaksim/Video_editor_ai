@@ -20,8 +20,8 @@
 ## Быстрый старт
 
 ```bash
-git clone <ссылка на репозиторий> ai-montage-kit
-cd ai-montage-kit
+git clone https://github.com/neprostomaksim/Video_editor_ai.git
+cd Video_editor_ai
 ./setup.sh
 ```
 
