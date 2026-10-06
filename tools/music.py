@@ -123,6 +123,13 @@ def mood_for(bpm):
     return "energetic upbeat electronic, modern tech, driving but light"
 
 
+def heygen_ready():
+    """HeyGen CLI установлен и вход выполнен (каталог музыки идёт через него)."""
+    import shutil
+    hg = shutil.which("heygen") or os.path.expanduser("~/.local/bin/heygen")
+    return os.path.exists(hg) and subprocess.run([hg, "auth", "status"], capture_output=True).returncode == 0
+
+
 def resolve_bgm(proj, intent):
     r = subprocess.run(["node", RESOLVE, "--type", "bgm", "--intent", intent, "--project", proj],
                        capture_output=True, text=True, timeout=240)
@@ -197,9 +204,9 @@ def main():
     elif own:
         cands = own
         print(f"свои треки студии: {len(own)}")
-    elif not RESOLVE:
-        raise SystemExit("нет треков: положи музыку в studio/music/ или поставь скиллы HyperFrames (npx hyperframes skills) "
-                         "и войди в HeyGen (heygen auth login --oauth) — ролик соберётся и без музыки")
+    elif not RESOLVE or not heygen_ready():
+        raise SystemExit("нет треков: положи свою музыку в studio/music/ или подключи каталог HeyGen — ./setup.sh --heygen "
+                         "(вход через браузер). Ролик соберётся и без музыки")
     else:
         base = a.mood or snd.get("music_mood") or (sty["base"] if a.style != "electronic" else mood_for(tb))
         pool = [f"{base}, around {tb} BPM, instrumental, no vocals, background for short video"] + \

@@ -2,12 +2,24 @@
 # Установка и проверка окружения AI Montage Kit.
 #   ./setup.sh          поставить недостающее (без Homebrew и прав администратора — всё кладётся в папку проекта)
 #   ./setup.sh --check  только проверить
+#   ./setup.sh --heygen подключить HeyGen (по желанию: музыка из каталога HeyGen; вход через браузер)
 # Нужно заранее только Node.js 22+ (nodejs.org, LTS) и Python 3 (на Mac предложит установиться сам).
 set -u
 cd "$(dirname "$0")"
 ROOT="$PWD"
 export PATH="$ROOT/bin:$PATH"
 CHECK=0; [ "${1:-}" = "--check" ] && CHECK=1
+if [ "${1:-}" = "--heygen" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+  if ! command -v heygen >/dev/null 2>&1; then
+    echo "Ставлю HeyGen CLI…"
+    curl -fsSL https://static.heygen.ai/cli/install.sh | bash || { echo "не вышло — https://developers.heygen.com/cli"; exit 1; }
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
+  echo "Вход в HeyGen: откроется браузер — войди в свой аккаунт HeyGen (можно бесплатный) и подтверди доступ."
+  heygen auth login --oauth && echo "✓ HeyGen подключён: музыка из каталога доступна"
+  exit $?
+fi
 OS="$(uname -s)"; ARCH="$(uname -m)"
 miss=()
 say() { printf "  %-30s %s\n" "$1" "$2"; }
@@ -28,6 +40,9 @@ for d in .agents/skills .claude/skills "$HOME/.claude/skills" "$HOME/.agents/ski
   [ -f "$d/hyperframes-audio/scripts/carve.mjs" ] && SK=1
 done
 if [ $SK = 1 ]; then say "скиллы HyperFrames (музыка)" "✓"; else say "скиллы HyperFrames (музыка)" "— нет (желательно)"; miss+=(skills); fi
+HG="$HOME/.local/bin/heygen"; command -v heygen >/dev/null 2>&1 && HG="$(command -v heygen)"
+if [ -x "$HG" ] && "$HG" auth status >/dev/null 2>&1; then say "HeyGen (музыка из каталога)" "✓ подключён"
+else say "HeyGen (музыка из каталога)" "— не подключён (по желанию: ./setup.sh --heygen)"; fi
 if [ -f studio/studio.json ] && [ -f studio/profile.md ]; then say "монтаж" "✓ настроен"; else say "монтаж" "— не настроен: открой агента и напиши «привет»"; fi
 
 need() { for m in "${miss[@]:-}"; do [ "$m" = "$1" ] && return 0; done; return 1; }
