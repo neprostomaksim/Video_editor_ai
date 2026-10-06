@@ -2,7 +2,7 @@
 # Установка и проверка окружения AI Montage Kit.
 #   ./setup.sh          поставить недостающее (без Homebrew и прав администратора — всё кладётся в папку проекта)
 #   ./setup.sh --check  только проверить
-# Нужно заранее только Node.js (nodejs.org, LTS) и Python 3 (на Mac предложит установиться сам).
+# Нужно заранее только Node.js 22+ (nodejs.org, LTS) и Python 3 (на Mac предложит установиться сам).
 set -u
 cd "$(dirname "$0")"
 ROOT="$PWD"
@@ -14,7 +14,8 @@ say() { printf "  %-30s %s\n" "$1" "$2"; }
 has() { command -v "$1" >/dev/null 2>&1; }
 
 echo "AI Montage Kit — проверка окружения"
-if has node && has npx; then say "Node.js" "✓ $(node -v)"; else say "Node.js" "✗ нет — скачай LTS с https://nodejs.org"; miss+=(node); fi
+if has node && has npx && [ "$(node -p "process.versions.node.split('.')[0]")" -ge 22 ] 2>/dev/null; then say "Node.js" "✓ $(node -v)"
+else say "Node.js 22+" "✗ нет или старая версия — скачай LTS с https://nodejs.org"; miss+=(node); fi
 if has python3 && python3 -c "import sys; sys.exit(sys.version_info < (3, 9))" 2>/dev/null; then say "Python 3" "✓"; else
   say "Python 3" "✗ нет — Mac: xcode-select --install · Windows/Linux: python.org"; miss+=(python); fi
 if has ffmpeg && has ffprobe; then say "ffmpeg (видео и звук)" "✓"; else say "ffmpeg (видео и звук)" "✗ нет"; miss+=(ffmpeg); fi
