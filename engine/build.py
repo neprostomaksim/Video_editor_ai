@@ -25,7 +25,7 @@ for m in pkgutil.iter_modules(SC.__path__):
 
 
 def find_carve():
-    """carve.mjs из официальных скиллов HyperFrames (npx hyperframes skills) — ищем в обычных местах установки."""
+    """carve.mjs из официальных скиллов HyperFrames (./hf skills) — ищем в обычных местах установки."""
     for base in (os.path.join(C.ROOT, ".claude", "skills"), os.path.expanduser("~/.claude/skills"),
                  os.path.join(C.ROOT, ".agents", "skills"), os.path.expanduser("~/.agents/skills"),
                  os.path.expanduser("~/.codex/skills"), os.path.expanduser("~/.cursor/skills")):
@@ -523,7 +523,7 @@ class Build:
                       open(hj, "w"), indent=2)
         # музыка: carve — музыка уступает голосу в его частотах (анализ пишет fx-chain + огибающие)
         if self.shot.get("music") and not self.carve:
-            self.warn("carve (скилл hyperframes-audio) не найден — музыка просто приглушена; поставь: npx hyperframes skills")
+            self.warn("carve (скилл hyperframes-audio) не найден — музыка просто приглушена; поставь: ./hf skills")
         if self.shot.get("music") and self.carve:
             r = subprocess.run(["node", self.carve,
                                 "--comp", os.path.join(self.pub, "index.html"), "--bed", "music",

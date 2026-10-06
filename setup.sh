@@ -32,7 +32,10 @@ if has python3 && python3 -c "import sys; sys.exit(sys.version_info < (3, 9))" 2
   say "Python 3" "✗ нет — Mac: xcode-select --install · Windows/Linux: python.org"; miss+=(python); fi
 if has ffmpeg && has ffprobe; then say "ffmpeg (видео и звук)" "✓"; else say "ffmpeg (видео и звук)" "✗ нет"; miss+=(ffmpeg); fi
 if has yt-dlp; then say "yt-dlp (видео по ссылкам)" "✓"; else say "yt-dlp (видео по ссылкам)" "✗ нет"; miss+=(ytdlp); fi
-if [ -d tools/node_modules/puppeteer-core ]; then say "зависимости tools/" "✓"; else say "зависимости tools/" "✗ нет"; miss+=(npm); fi
+if [ -x tools/node_modules/.bin/hyperframes ] && [ -d tools/node_modules/puppeteer-core ]; then
+  say "HyperFrames (анимация и рендер)" "✓ $(tools/node_modules/.bin/hyperframes --version 2>/dev/null | tail -1)"
+  if ./hf browser path >/dev/null 2>&1; then say "браузер для рендера" "✓"; else say "браузер для рендера" "✗ нет"; miss+=(browser); fi
+else say "HyperFrames (анимация и рендер)" "✗ нет"; miss+=(npm browser); fi
 if ls "$HOME"/.cache/hyperframes/whisper/models/ggml-small*.bin >/dev/null 2>&1; then say "распознавание речи" "✓"
 else say "распознавание речи" "— скачается при первом запуске (~470 МБ)"; miss+=(asr); fi
 SK=0
@@ -46,7 +49,7 @@ else say "HeyGen (музыка из каталога)" "— не подключ�
 if [ -f studio/studio.json ] && [ -f studio/profile.md ]; then say "монтаж" "✓ настроен"; else say "монтаж" "— не настроен: открой агента и напиши «привет»"; fi
 
 need() { for m in "${miss[@]:-}"; do [ "$m" = "$1" ] && return 0; done; return 1; }
-hard=0; for m in "${miss[@]:-}"; do case "$m" in node|python|ffmpeg|npm|ytdlp) hard=1;; esac; done
+hard=0; for m in "${miss[@]:-}"; do case "$m" in node|python|ffmpeg|npm|browser|ytdlp) hard=1;; esac; done
 if [ ${#miss[@]} -eq 0 ] || { [ $CHECK = 1 ] && [ $hard = 0 ]; }; then
   echo; echo "Готово. Открой папку в Claude Code или Codex и напиши «привет»."; exit 0; fi
 if [ $CHECK = 1 ]; then echo; echo "Не хватает: ${miss[*]} → запусти ./setup.sh"; exit 1; fi
@@ -54,6 +57,7 @@ if need node || need python; then echo; echo "Сначала поставь Node
 
 echo; echo "Ставлю недостающее в папку проекта…"
 mkdir -p bin
+echo "• HyperFrames и зависимости"
 (cd tools && npm install --no-fund --no-audit --loglevel=error)
 if need ffmpeg; then
   echo "• ffmpeg"
@@ -72,14 +76,18 @@ if need ytdlp; then
   curl -fsSL -o bin/yt-dlp "https://github.com/yt-dlp/yt-dlp/releases/latest/download/$Y" && chmod +x bin/yt-dlp \
     || echo "  не скачался — видео по ссылкам не будут работать, файлами можно"
 fi
+if need browser || need npm; then
+  echo "• браузер для рендера"
+  ./hf browser ensure >/dev/null 2>&1 || echo "  не скачался — повтори ./setup.sh"
+fi
 if need asr; then
   echo "• распознавание речи (модель ~470 МБ, один раз)"
   ffmpeg -v error -y -f lavfi -i "sine=f=440:d=2" -ar 16000 -ac 1 bin/.probe.wav \
-    && npx --yes hyperframes transcribe bin/.probe.wav -d bin/.probe -m small -l ru --json >/dev/null 2>&1
+    && ./hf transcribe bin/.probe.wav -d bin/.probe -m small -l ru --json >/dev/null 2>&1
   rm -rf bin/.probe bin/.probe.wav
 fi
 if need skills; then
   echo "• скиллы HyperFrames"
-  npx --yes hyperframes skills >/dev/null 2>&1 || echo "  не вышло — можно позже: npx hyperframes skills"
+  ./hf skills >/dev/null 2>&1 || echo "  не вышло — можно позже: ./hf skills"
 fi
 echo; exec ./setup.sh --check

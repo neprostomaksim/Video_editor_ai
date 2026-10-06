@@ -15,24 +15,20 @@ def style():
 
 
 def speech_words(media, workdir, lang):
-    """Речь → слова с таймингами [{w, start, end}] через `npx hyperframes transcribe`.
+    """Речь → слова с таймингами [{w, start, end}] через HyperFrames (`./hf transcribe`).
     Whisper и модель HyperFrames скачивает сам при первом запуске (ничего ставить не нужно).
     Модель: small (многоязычная; по умолчанию), точнее и медленнее — HF_WHISPER_MODEL=large-v3."""
     os.makedirs(workdir, exist_ok=True)
     model = os.environ.get("HF_WHISPER_MODEL", "small")
-    r = subprocess.run(npx() + ["hyperframes", "transcribe", os.path.abspath(media), "-d", os.path.abspath(workdir),
+    r = subprocess.run([os.path.join(ROOT, "hf"), "transcribe", os.path.abspath(media), "-d", os.path.abspath(workdir),
                         "-m", model, "-l", lang, "--json"], capture_output=True, text=True)
     out = os.path.join(workdir, "transcript.json")
     if r.returncode or not os.path.exists(out):
         sys.stderr.write((r.stdout + r.stderr)[-1500:] + "\n")
-        raise SystemExit("распознавание речи не удалось (npx hyperframes transcribe) — проверь интернет при первом запуске")
+        raise SystemExit("распознавание речи не удалось (./hf transcribe) — проверь интернет при первом запуске")
     words = [{"w": w["text"].strip(), "start": float(w["start"]), "end": float(w["end"])}
              for w in json.load(open(out, encoding="utf-8")) if w.get("text", "").strip()]
     return words
-
-
-def npx():
-    return ["npx", "--yes"]
 
 
 def glossary():

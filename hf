@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# HyperFrames CLI с ffmpeg проекта: ./hf render videos/<slug>/public -o videos/<slug>/output.mp4 --fps 25
-# (то же, что `npx hyperframes …`, но видит ffmpeg/ffprobe из ./bin, если в системе их нет)
+# HyperFrames — движок анимации и рендера (open-source, Apache-2.0, от HeyGen).
+# Версия закреплена в tools/package.json и ставится ./setup.sh в tools/node_modules.
+#   ./hf check videos/<slug>/public
+#   ./hf snapshot videos/<slug>/public --at 0,3,6 --describe false
+#   ./hf render videos/<slug>/public -o videos/<slug>/output.mp4 --fps 25
+# Видит ffmpeg/ffprobe/yt-dlp из ./bin, если в системе их нет.
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 export PATH="$ROOT/bin:$PATH"
-exec npx --yes hyperframes "$@"
+export HYPERFRAMES_NO_UPDATE_CHECK=1
+LOCAL="$ROOT/tools/node_modules/.bin/hyperframes"
+if [ -x "$LOCAL" ]; then exec "$LOCAL" "$@"; fi
+exec npx --yes hyperframes@0.8.138 "$@"
