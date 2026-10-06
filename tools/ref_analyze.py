@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--thr", type=float, default=0.22, help="порог детекции склейки (0.15–0.35)")
     ap.add_argument("--thr-top", type=float, default=0.08, help="порог для верхней зоны (split-графика)")
     ap.add_argument("--min", type=float, default=0.6, help="минимальная длина шота, с")
+    ap.add_argument("--lang", default="auto", help="язык речи донора (по умолч. определяется сам)")
     a = ap.parse_args()
     out = os.path.join(a.proj, "ref")
     os.makedirs(os.path.join(out, "shots"), exist_ok=True)
@@ -52,16 +53,20 @@ def main():
         bounds.append(dur)
     shots = [{"i": i + 1, "start": round(s, 2), "end": round(e, 2)} for i, (s, e) in enumerate(zip(bounds, bounds[1:]))]
 
-    # 2. речь донора
-    wav = os.path.join(out, ".a.wav")
-    sh(["ffmpeg", "-v", "error", "-y", "-i", a.ref, "-ac", "1", "-ar", "16000", wav])
-    sh([CM.whisper_bin(), "-m", CM.whisper_model(), "-l", "auto", "-oj", "-np", "-f", wav, "-of", os.path.join(out, ".w")])
+    # 2. речь донора (язык определяется сам)
     segs = []
     try:
-        for s in json.load(open(os.path.join(out, ".w.json")))["transcription"]:
-            segs.append((s["offsets"]["from"] / 1000, s["offsets"]["to"] / 1000, s["text"].strip()))
-    except Exception:
-        pass
+        words = CM.speech_words(a.ref, os.path.join(out, ".asr"), a.lang)
+        cur = []
+        for w in words:
+            cur.append(w)
+            if w["w"][-1:] in ".!?…" or len(cur) >= 14:
+                segs.append((cur[0]["start"], cur[-1]["end"], " ".join(x["w"] for x in cur)))
+                cur = []
+        if cur:
+            segs.append((cur[0]["start"], cur[-1]["end"], " ".join(x["w"] for x in cur)))
+    except SystemExit:
+        print("⚠ речь донора не распознана — разбор только по кадрам")
     open(os.path.join(out, "transcript.txt"), "w").write(
         "\n".join(f"{a_:6.2f}–{b_:6.2f}  {t}" for a_, b_, t in segs))
     for s in shots:
@@ -100,11 +105,6 @@ def main():
            "| хук (первые 2 с): что на экране | |",
            "| финал/CTA | |"]
     open(os.path.join(out, "analysis.md"), "w").write("\n".join(md) + "\n")
-    for f in (".a.wav",):
-        try:
-            os.remove(os.path.join(out, f))
-        except OSError:
-            pass
     print(f"→ {out}/analysis.md, sheet.jpg ({len(shots)} шотов)")
 
 

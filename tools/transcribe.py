@@ -135,9 +135,7 @@ def main():
          "-af", "loudnorm=I=-15:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k", vid])
     run(["ffmpeg", "-v", "error", "-y", "-ss", "1", "-i", vid, "-frames:v", "1", "-vf", "scale=540:-1",
          os.path.join(proj, "frame.jpg")])
-    wav = os.path.join(proj, ".audio16k.wav")
-    run(["ffmpeg", "-v", "error", "-y", "-i", vid, "-ac", "1", "-ar", "16000", wav])
-    words = unsquish(apply_glossary(CM.whisper_json(wav, os.path.join(proj, ".whisper"), lang)))
+    words = unsquish(apply_glossary(CM.speech_words(vid, os.path.join(proj, ".asr"), lang)))
     json.dump(words, open(os.path.join(proj, "words.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=0)
     dur = CM.duration(vid)

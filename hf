@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# HyperFrames CLI с ffmpeg проекта: ./hf render videos/<slug>/public -o videos/<slug>/output.mp4 --fps 25
+# (то же, что `npx hyperframes …`, но видит ffmpeg/ffprobe из ./bin, если в системе их нет)
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+export PATH="$ROOT/bin:$PATH"
+exec npx --yes hyperframes "$@"

@@ -13,7 +13,8 @@
 
 1. **Речь:** живая запись → `tools/cleanup.py` (план → проверка → `--apply`) → `transcribe.py source/clean.mp4`;
    ИИ-аватар → сразу `transcribe.py`.
-2. **Разбор донора:** `python3 tools/ref_analyze.py donor.mp4 videos/<slug>` → `ref/analysis.md` (шоты · время · речь
+2. **Посмотри донора:** ссылка или файл → `python3 tools/watch.py <ссылка|файл>` (скачает по ссылке в
+   `videos/_watch/<имя>/video.mp4`). **Разбор донора:** `python3 tools/ref_analyze.py <video.mp4> videos/<slug>` → `ref/analysis.md` (шоты · время · речь
    донора), `ref/sheet.jpg` (контакт-лист), `ref/frames/` (крупные кадры). Посмотри картинки.
 3. **Заполни в `analysis.md` колонку «решение»** для каждого шота:
    - `b-roll` — живая демонстрация продукта (запись экрана, анимация интерфейса). Кроп:

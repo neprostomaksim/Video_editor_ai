@@ -148,8 +148,8 @@ jump-cut наезды 1.0 ↔ 1.1 на начале фраз и на каждо�
 ## 5. Проверка перед рендером
 
 1. `python3 engine/build.py videos/<slug>`: читай предупреждения (⚠), исправляй.
-2. `cd videos/<slug> && npx hyperframes check public`: **0 errors**.
-3. `npx hyperframes snapshot public --at t1,t2,… --describe false` (кадр 0 + середина каждой сцены) →
+2. `./hf check videos/<slug>/public`: **0 errors**.
+3. `./hf snapshot videos/<slug>/public --at t1,t2,… --describe false` (кадр 0 + середина каждой сцены) →
    **посмотри `public/snapshots/contact-sheet.jpg` сам**: текст не вылезает, логотипы правильные, ничего не
    перекрывает лицо, субтитры читаются.
 4. Раскадровку до рендера коротко покажи клиенту таблицей «время — сцена — что на экране».

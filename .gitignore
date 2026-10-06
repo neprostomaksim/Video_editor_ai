@@ -23,3 +23,4 @@ studio/fonts/*
 !studio/music/
 studio/music/*
 !studio/music/.gitkeep
+bin/

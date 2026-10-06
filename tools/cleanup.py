@@ -51,9 +51,7 @@ def analyze(raw, proj, a):
     src = os.path.join(proj, "source")
     os.makedirs(src, exist_ok=True)
     lang = a.lang or CM.style().get("language", "ru")
-    wav = os.path.join(src, ".raw16k.wav")
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", raw, "-ac", "1", "-ar", "16000", wav], check=True)
-    words = CM.whisper_json(wav, os.path.join(src, ".raw_whisper"), lang)
+    words = CM.speech_words(raw, os.path.join(src, ".asr"), lang)
     dur = CM.duration(raw)
     json.dump(words, open(os.path.join(src, "raw_words.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     cuts = []
@@ -148,7 +146,6 @@ def analyze(raw, proj, a):
     md += ["", f"(+ {np_} коротких пауз < 1.5 c — вырезаются автоматически)", "",
            "## Распознанный текст сырой записи", "", " ".join(w["w"] for w in words)]
     open(os.path.join(src, "plan.md"), "w", encoding="utf-8").write("\n".join(md) + "\n")
-    os.remove(wav)
     print("\n".join(md[:3]))
     print(f"→ {os.path.join(src, 'plan.md')}")
 

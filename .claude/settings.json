@@ -4,8 +4,9 @@
       "Bash(python3 tools/*)",
       "Bash(python3 engine/*)",
       "Bash(node tools/*)",
+      "Bash(./hf *)",
       "Bash(npx hyperframes *)",
-      "Bash(npx -y hyperframes *)",
+      "Bash(npx --yes hyperframes *)",
       "Bash(./setup.sh*)",
       "Bash(ffprobe *)"
     ]

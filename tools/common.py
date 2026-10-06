@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Общее для инструментов: корень проекта, настройки студии, модель whisper, глоссарий."""
+"""Общее для инструментов: корень проекта, настройки студии, распознавание речи, глоссарий."""
 import json, os, re, shutil, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STUDIO = os.path.join(ROOT, "studio")
 sys.path.insert(0, os.path.join(ROOT, "engine"))
+# ffmpeg / ffprobe / yt-dlp, которые ./setup.sh положил в проект (если их нет в системе)
+os.environ["PATH"] = os.path.join(ROOT, "bin") + os.pathsep + os.environ.get("PATH", "")
 
 
 def style():
@@ -12,41 +14,25 @@ def style():
     return load_style()
 
 
-def whisper_model():
-    """ggml-модель whisper.cpp: $WHISPER_MODEL → models/ в проекте → кэш HyperFrames."""
-    for p in (os.environ.get("WHISPER_MODEL"),
-              os.path.join(ROOT, "models", "ggml-small.bin"),
-              os.path.expanduser("~/.cache/hyperframes/whisper/models/ggml-small.bin"),
-              os.path.join(ROOT, "models", "ggml-base.bin")):
-        if p and os.path.exists(p):
-            return p
-    raise SystemExit("Нет модели распознавания речи. Запусти ./setup.sh (скачает models/ggml-small.bin, ~470 МБ)")
-
-
-def whisper_bin():
-    for b in ("whisper-cli", "whisper-cpp", "main"):
-        if shutil.which(b):
-            return b
-    raise SystemExit("Нет whisper-cli. macOS: brew install whisper-cpp  (или ./setup.sh)")
-
-
-def whisper_json(wav, out_base, lang):
-    """Слова с таймингами (по одному токену на сегмент) → [{w, start, end}]."""
-    subprocess.run([whisper_bin(), "-m", whisper_model(), "-l", lang, "-ml", "1", "-sow", "-oj", "-np",
-                    "-f", wav, "-of", out_base], check=True)
-    data = json.load(open(out_base + ".json", encoding="utf-8"))
-    words = []
-    for seg in data.get("transcription", []):
-        txt = seg["text"]
-        if not txt.strip():
-            continue
-        a, b = seg["offsets"]["from"] / 1000, seg["offsets"]["to"] / 1000
-        if txt.startswith(" ") or not words:
-            words.append({"w": txt.strip(), "start": a, "end": b})
-        else:
-            words[-1]["w"] += txt.strip()
-            words[-1]["end"] = b
+def speech_words(media, workdir, lang):
+    """Речь → слова с таймингами [{w, start, end}] через `npx hyperframes transcribe`.
+    Whisper и модель HyperFrames скачивает сам при первом запуске (ничего ставить не нужно).
+    Модель: small (многоязычная; по умолчанию), точнее и медленнее — HF_WHISPER_MODEL=large-v3."""
+    os.makedirs(workdir, exist_ok=True)
+    model = os.environ.get("HF_WHISPER_MODEL", "small")
+    r = subprocess.run(npx() + ["hyperframes", "transcribe", os.path.abspath(media), "-d", os.path.abspath(workdir),
+                        "-m", model, "-l", lang, "--json"], capture_output=True, text=True)
+    out = os.path.join(workdir, "transcript.json")
+    if r.returncode or not os.path.exists(out):
+        sys.stderr.write((r.stdout + r.stderr)[-1500:] + "\n")
+        raise SystemExit("распознавание речи не удалось (npx hyperframes transcribe) — проверь интернет при первом запуске")
+    words = [{"w": w["text"].strip(), "start": float(w["start"]), "end": float(w["end"])}
+             for w in json.load(open(out, encoding="utf-8")) if w.get("text", "").strip()]
     return words
+
+
+def npx():
+    return ["npx", "--yes"]
 
 
 def glossary():
@@ -66,11 +52,12 @@ def duration(path):
 
 
 def video_size(path):
-    out = subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
-                                   "stream=width,height:stream_side_data=rotation", "-of", "json", path]).decode()
+    """(ширина, высота) с учётом поворота телефонного видео; совместимо со старыми ffprobe."""
+    out = subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_streams",
+                                   "-of", "json", path]).decode()
     st = json.loads(out)["streams"][0]
     w, h = st["width"], st["height"]
-    rot = 0
+    rot = int(float((st.get("tags") or {}).get("rotate", 0) or 0))
     for sd in st.get("side_data_list", []) or []:
-        rot = int(sd.get("rotation", 0) or 0)
-    return (h, w) if abs(rot) == 90 else (w, h)
+        rot = int(float(sd.get("rotation", rot) or rot))
+    return (h, w) if abs(rot) % 180 == 90 else (w, h)

@@ -16,6 +16,7 @@ import copy, html as _html, json, os, re, shutil, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYS = ROOT                                  # совместимость: ассеты лежат в ROOT/assets
 STUDIO = os.path.join(ROOT, "studio")
+os.environ["PATH"] = os.path.join(ROOT, "bin") + os.pathsep + os.environ.get("PATH", "")   # ffmpeg из ./setup.sh
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import logos as LOGOS       # noqa: E402
 

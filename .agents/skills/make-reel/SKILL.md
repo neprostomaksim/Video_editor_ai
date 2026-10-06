@@ -28,8 +28,12 @@ description: >
      `python3 tools/cleanup.py <raw.mp4> videos/<slug> --apply` → `transcribe.py videos/<slug>/source/clean.mp4 videos/<slug>`.
    - ИИ-аватар: сразу `python3 tools/transcribe.py <video.mp4> videos/<slug>`.
    - Проверь `videos/<slug>/frame.jpg`: спикер в кадре, голова не обрезана (горизонтальное видео → `--x`).
+   - **Первый ролик клиента и нет `studio/sample.mp4`** → скопируй его исходник туда: на нём настраивается превью и
+     положение головы (`source.split_pos`, `face_top`). Живая съёмка и в профиле нет плотности чистки — покажи
+     план вырезов и спроси одно: «резать паузы плотно или мягко?»
    - Прочитай `transcript.txt`, исправь названия в `words.json`; повторяющиеся ошибки → `studio/glossary.json`.
-2. **Референс ролика** (если дали): по `docs/REFERENCE_MODE.md` — `tools/ref_analyze.py`, решения по шотам, b-roll `clip.py`.
+2. **Референс ролика** (если дали ссылку или файл): сначала посмотри его — `python3 tools/watch.py <ссылка|файл>`
+   (`.agents/skills/watch-video/SKILL.md`), дальше по `docs/REFERENCE_MODE.md` — `tools/ref_analyze.py`, решения по шотам, b-roll `clip.py`.
 3. **Материалы** — только для того, что звучит в озвучке, факты проверяй:
    - сайт/пост/новость: `node tools/web_capture.mjs <url> videos/<slug>/captures/x.png [--mobile] [--scroll N]`;
    - GitHub: `node tools/github_capture.mjs owner/name videos/<slug>`;
@@ -41,13 +45,15 @@ description: >
 5. **Музыка** (если `sound.music`): `python3 tools/music.py videos/<slug>`. Нет треков/доступа — собираем без музыки
    и говорим клиенту, как добавить (`studio/music/`).
 6. **Сборка:** `python3 engine/build.py videos/<slug>` — исправь все ⚠.
-7. **Проверка:** `cd videos/<slug> && npx hyperframes check public` (0 errors) →
-   `npx hyperframes snapshot public --at 0,<середины сцен> --describe false` → **посмотри
+7. **Проверка:** `./hf check videos/<slug>/public` (0 errors) →
+   `./hf snapshot videos/<slug>/public --at 0,<середины сцен> --describe false` → **посмотри
    `public/snapshots/contact-sheet.jpg` сам**: кадр 0 = обложка, текст не на лице, субтитры не перекрывают графику,
    логотипы настоящие. Нашёл проблему — правь раскадровку и пересобирай.
-8. **Рендер:** `cd videos/<slug> && npx hyperframes render public -o output.mp4 --fps 25`
+8. **Рендер:** `./hf render videos/<slug>/public -o videos/<slug>/output.mp4 --fps 25`
    (60 с+ → `--low-memory-mode`; ошибка «detached Frame» → повторить; на Mac быстрее с `PRODUCER_BROWSER_GPU_MODE=hardware`) →
    `python3 tools/finalize.py videos/<slug>` — громкость к −16 LUFS + лёгкая копия `output_web.mp4`.
+   **Посмотри готовый ролик сам:** `python3 tools/watch.py videos/<slug>/output.mp4 --no-speech` → открой кадры:
+   хук с кадра 0, ничего не мигает и не обрезано, субтитры читаются, финал на месте. Нашёл — исправь и перерендерь.
 9. **Клиенту:** путь к ролику + таблица «время — сцена — что на экране» + что проверить (названия, цифры,
    кодовое слово). Правки клиента, которые касаются всех роликов, — в `studio.json` / `profile.md` → «Правки клиента».
 

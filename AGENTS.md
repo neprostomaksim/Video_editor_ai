@@ -11,7 +11,7 @@
   покажи **список из 8 вопросов** из `docs/QUESTIONS.md` («Коротко»), затем задавай их **по одному**, записывая
   ответы в `studio/onboarding.md`. Нет материала — объясни, зачем он, и порекомендуй прислать. Просят смонтировать
   без настройки — объясни, что без неё ролик выйдет в чужом стиле, а настройка — 8 коротких вопросов про монтаж.
-  Если видео уже прислали — это и есть ответ на вопрос 1.
+  Если уже прислали видео или ссылки — это ответы на вопросы 1–2.
 - **`studio/onboarding.md` есть, но в нём остались ⬜ / ⏳** — напомни, на чём остановились, и предложи продолжить.
 - **Всё настроено** — работай по маршрутизации ниже.
 
@@ -21,10 +21,11 @@
 | Студия не настроена / «настрой под меня», «перенастрой» | **Настройка**: `.agents/skills/setup-studio/SKILL.md` + анкета `docs/QUESTIONS.md` |
 | Прислали видео спикера / «смонтируй», «сделай ролик» / новый файл в `inbox/` | **Монтаж**: `.agents/skills/make-reel/SKILL.md` |
 | «Поменяй цвет / шрифт / субтитры», «как будет выглядеть» | **Стиль**: `.agents/skills/style-lab/SKILL.md` |
+| Ссылка на видео / файл и «посмотри», «разбери», «сделай как здесь» | **Просмотр**: `.agents/skills/watch-video/SKILL.md` (`tools/watch.py` — кадры + речь, кадры открываешь как картинки) |
 | Клиент поправил готовый ролик («субтитры мельче», «меньше графики») | Исправь, и если это про все ролики — внеси в `studio.json` / `studio/profile.md` → «Правки клиента» |
 
 Скиллы лежат в `.agents/skills/` (их находит Codex; для Claude Code там же — через ссылку `.claude/skills`).
-Вызов: `/setup-studio`, `/make-reel`, `/style-lab` в Claude Code, `$setup-studio`… в Codex или просто словами —
+Вызов: `/setup-studio`, `/make-reel`, `/style-lab`, `/watch-video` в Claude Code, `$setup-studio`… в Codex или просто словами —
 в любом агенте достаточно прочитать соответствующий `SKILL.md` и следовать ему.
 
 ## Карта проекта
@@ -38,10 +39,12 @@ studio/          ПРОФИЛЬ КЛИЕНТА — всё, что делает �
 inbox/           сюда клиент кидает видео, сценарии, референсы
 videos/<slug>/   проекты роликов: words.json, transcript.txt, shotlist.json, public/, output.mp4
 engine/          сборщик (build.py), ядро (core.py), библиотека сцен (scenes/*.py), defaults.json
-tools/           transcribe, cleanup, ref_analyze, clip, captures, logos, fonts, music, studio, style_preview, finalize
+tools/           watch (посмотреть видео), transcribe, cleanup, ref_analyze, clip, captures, logos, fonts, music, studio, style_preview, finalize
+hf               HyperFrames CLI (./hf check|snapshot|render) — видит ffmpeg из bin/
+bin/             ffmpeg, yt-dlp — кладёт ./setup.sh, если их нет в системе
 presets/         готовые стили
 docs/            анкета (QUESTIONS.md), правила режиссёра, режим референса, справочник стиля, шаблоны
-.agents/skills/  сценарии работы: setup-studio, make-reel, style-lab
+.agents/skills/  сценарии работы: setup-studio, make-reel, style-lab, watch-video
 assets/          встроенные шрифты, звуки, логотипы, базовый глоссарий
 ```
 
