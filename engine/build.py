@@ -4,8 +4,8 @@
   python3 engine/build.py videos/<slug>
 
 Раскладка аватара выводится из сцен автоматически:
-  layout "split"   — графика сверху (0..1010), аватар снизу
-  layout "full"    — графика на весь экран, аватар скрыт
+  layout "split"   — графика сверху (0..1010), аватар снизу (studio layout.split_order="speaker_top" — наоборот)
+  layout "full"    — графика на весь экран, аватар скрыт (layout.full_avatar="pip" — аватар в кружке поверх)
   layout "overlay" — графика поверх полного аватара (титулы, лого-стинги)
   нет сцены        — полный аватар
 """
@@ -14,7 +14,7 @@ import importlib, json, os, pkgutil, shutil, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import core as C  # noqa: E402
-from core import W, H, SPLIT_H, esc, js, q  # noqa: E402
+from core import W, H, SPLIT_H, SPLIT_TOP, SPEAKER_TOP, SEAM, esc, js, q  # noqa: E402
 import scenes as SC  # noqa: E402
 
 SCENES = {}
@@ -25,7 +25,7 @@ for m in pkgutil.iter_modules(SC.__path__):
 
 
 def find_carve():
-    """carve.mjs из официальных скиллов HyperFrames (./hf skills) — ищем в обычных местах установки."""
+    """carve.mjs из официальных скиллов HyperFrames (hf.py skills) — ищем в обычных местах установки."""
     for base in (os.path.join(C.ROOT, ".claude", "skills"), os.path.expanduser("~/.claude/skills"),
                  os.path.join(C.ROOT, ".agents", "skills"), os.path.expanduser("~/.agents/skills"),
                  os.path.expanduser("~/.codex/skills"), os.path.expanduser("~/.cursor/skills")):
@@ -47,7 +47,7 @@ class Build:
             os.makedirs(self.pub, exist_ok=True)
             src, dst = os.path.join(self.proj, "public", "input-video.mp4"), os.path.join(self.pub, "input-video.mp4")
             if not os.path.exists(dst):
-                os.link(src, dst)
+                C.P.link_or_copy(src, dst)
         self.words = json.load(open(os.path.join(self.proj, "words.json"), encoding="utf-8"))
         self.fps = int(self.shot.get("fps", 25))
         sh = self.shot
@@ -64,7 +64,7 @@ class Build:
         sc = self.shot.get("sfx", {"enabled": snd.get("sfx", True), "volume": snd.get("sfx_volume", 1.0)})
         self.sfx_on = sc.get("enabled", True) if isinstance(sc, dict) else bool(sc)
         self.sfx_vol = float(sc.get("volume", 1.0)) if isinstance(sc, dict) else 1.0
-        self.sfx_manifest = json.load(open(os.path.join(C.SYS, "assets", "sfx", "manifest.json")))
+        self.sfx_manifest = json.load(open(os.path.join(C.SYS, "assets", "sfx", "manifest.json"), encoding="utf-8"))
         vid = os.path.join(self.pub, "input-video.mp4")
         self.dur = float(self.shot.get("duration") or subprocess.check_output(
             ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", vid]).decode())
@@ -176,7 +176,7 @@ class Build:
             if s["layout"] == "overlay":
                 box = f"left:0;top:0;width:{W}px;height:{H}px;"
             else:
-                box = f"left:0;top:0;width:{W}px;height:{cx.AH}px;"
+                box = f"left:0;top:{cx.TOP}px;width:{W}px;height:{cx.AH}px;"
             bgcls = "" if s["layout"] == "overlay" else (" bg-dark" if s.get("bg") == "dark" else " bg-light")
             inner = mod.render(s, cx)
             body.append(
@@ -239,9 +239,18 @@ class Build:
             if merged and merged[-1][1] == m:
                 continue
             merged.append((t, m))
-        FULL = {"left": 0, "top": 0, "width": W, "height": H, "opacity": 1, "borderRadius": 0}
-        SPLIT = {"left": 0, "top": SPLIT_H, "width": W, "height": H - SPLIT_H, "opacity": 1,
-                 "borderRadius": f'{self.st["layout"].get("split_radius", 44)}px {self.st["layout"].get("split_radius", 44)}px 0 0'}
+        lay = self.st["layout"]
+        r = int(lay.get("split_radius", 44))
+        FULL = {"left": 0, "top": 0, "width": W, "height": H, "opacity": 1, "borderRadius": 0, "zIndex": 1}
+        SPLIT = {"left": 0, "top": 0 if SPEAKER_TOP else SPLIT_H, "width": W, "height": H - SPLIT_H, "opacity": 1,
+                 "zIndex": 1, "borderRadius": f"0 0 {r}px {r}px" if SPEAKER_TOP else f"{r}px {r}px 0 0"}
+        PIP = None
+        if lay.get("full_avatar", "hide") == "pip":         # спикер в кружке поверх полноэкранной графики
+            d, m = int(lay.get("pip_size", 300)), 48
+            corner = lay.get("pip_pos", "top-right")
+            x = m if "left" in corner else W - m - d
+            y = 200 if "top" in corner else H - 420 - d    # верх ~200 px и низ ~350 px — интерфейс Instagram
+            PIP = {"left": x, "top": y, "width": d, "height": d, "opacity": 1, "zIndex": 5, "borderRadius": "50%"}
         tl.set("#bg-video", {"scale": 1}, 0)
         av = self.av
         pos_full = av.get("full_pos", "50% 24%")
@@ -259,6 +268,9 @@ class Build:
                                                              "immediateRender": False}, t)
             elif m == "split":
                 tl.set("#video-wrap", SPLIT, t)
+                tl.set("#bg-video", {"objectPosition": pos_split}, t)
+            elif PIP:                                              # full-графика, спикер в кружке
+                tl.set("#video-wrap", PIP, t)
                 tl.set("#bg-video", {"objectPosition": pos_split}, t)
             else:                                                  # full-графика — аватар прячем
                 tl.set("#video-wrap", {"opacity": 0}, t)
@@ -341,7 +353,7 @@ class Build:
         # иначе видно «прыжок» головы. Они важнее фразовых наездов.
         cp = os.path.join(self.proj, "cuts.json")
         if os.path.exists(cp):
-            hard = [float(t) for t in json.load(open(cp))]
+            hard = [float(t) for t in json.load(open(cp, encoding="utf-8"))]
             cuts = sorted(set([round(t, 2) for t in hard] + [t for t in cuts if all(abs(t - h) > .8 for h in hard)]))
         state, prev_t = 1.0, 0.0
         resets = changes + [b for _, b in punches]          # после удара/смены раскладки масштаб снова 1.0
@@ -364,7 +376,7 @@ class Build:
         max_chars = int(cfg.get("max_chars", 20))
         # split → на стыке графики и спикера; полный кадр/графика → нижняя треть
         ys = cfg.get("top_split", cfg.get("y_split", "seam"))
-        top_split = SPLIT_H - int(int(str(cfg.get("size", 58)).rstrip("px")) * .8) if ys == "seam" else int(ys)
+        top_split = SEAM - int(int(str(cfg.get("size", 58)).rstrip("px")) * .8) if ys == "seam" else int(ys)
         top_full = int(cfg.get("top_full", cfg.get("y_full", 1360)))
         colors = self.theme
         active = C.color(cfg.get("active", "accent"), colors)
@@ -520,15 +532,15 @@ class Build:
                        "registry": "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry",
                        "paths": {"blocks": "compositions", "components": "compositions/components", "assets": "assets"},
                        "media": {"autoProxy": True}, "authoringSkill": "talking-head-recut"},
-                      open(hj, "w"), indent=2)
+                      open(hj, "w", encoding="utf-8"), indent=2)
         # музыка: carve — музыка уступает голосу в его частотах (анализ пишет fx-chain + огибающие)
         if self.shot.get("music") and not self.carve:
-            self.warn("carve (скилл hyperframes-audio) не найден — музыка просто приглушена; поставь: ./hf skills")
+            self.warn("carve (скилл hyperframes-audio) не найден — музыка просто приглушена; поставь: python3 hf.py skills")
         if self.shot.get("music") and self.carve:
             r = subprocess.run(["node", self.carve,
                                 "--comp", os.path.join(self.pub, "index.html"), "--bed", "music",
                                 "--voice", "source-audio", "--strength", str(getattr(self, "music_carve", 0.8)),
-                                "--core", os.path.join(C.SYS, "tools")], capture_output=True, text=True)
+                                "--core", os.path.join(C.SYS, "tools")], capture_output=True, text=True, encoding="utf-8", errors="replace")
             bands = [l for l in (r.stdout + r.stderr).splitlines() if l.startswith(("bands", "wrote"))]
             if r.returncode or not bands:
                 self.warn("carve не отработал: " + (r.stdout + r.stderr)[-300:])

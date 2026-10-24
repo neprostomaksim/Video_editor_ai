@@ -16,8 +16,10 @@ import copy, html as _html, json, os, re, shutil, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SYS = ROOT                                  # совместимость: ассеты лежат в ROOT/assets
 STUDIO = os.path.join(ROOT, "studio")
-os.environ["PATH"] = os.path.join(ROOT, "bin") + os.pathsep + os.environ.get("PATH", "")   # ffmpeg из ./setup.sh
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import hf_platform as P     # noqa: E402
+P.setup_io()                # UTF-8 в консоли Windows
+P.add_bin_to_path()         # ffmpeg из bin/ (кладёт setup.py)
 import logos as LOGOS       # noqa: E402
 
 
@@ -44,7 +46,11 @@ def load_style():
 
 STYLE = load_style()
 W, H = 1080, 1920
-SPLIT_H = int(STYLE["layout"].get("split_h", 1010))   # высота графики сверху в split; спикер — снизу
+SPLIT_H = int(STYLE["layout"].get("split_h", 1010))   # высота зоны графики в split
+# порядок split: "graphics_top" — графика сверху, спикер снизу (по умолч.); "speaker_top" — спикер сверху, графика снизу
+SPEAKER_TOP = STYLE["layout"].get("split_order", "graphics_top") == "speaker_top"
+SPLIT_TOP = H - SPLIT_H if SPEAKER_TOP else 0          # где начинается зона графики в split
+SEAM = H - SPLIT_H if SPEAKER_TOP else SPLIT_H         # стык графики и спикера
 LOCALE = {"ru": "ru-RU", "en": "en-US", "uk": "uk-UA", "de": "de-DE", "es": "es-ES"}.get(
     STYLE.get("language", "ru"), "ru-RU")
 
@@ -139,6 +145,7 @@ class Ctx:
         self.b, self.s = build, s
         self.W = W
         self.AH = SPLIT_H if s.get("layout", "split") == "split" else H
+        self.TOP = SPLIT_TOP if s.get("layout", "split") == "split" else 0   # верх зоны графики на странице
         self.t0, self.t1 = s["start"], s["end"]
         self.dur = self.t1 - self.t0
         self.id = s["id"]

@@ -22,11 +22,10 @@ import argparse, array, json, math, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as CM  # noqa: E402
 
-RESOLVE = next((p for p in (os.path.join(CM.ROOT, ".agents/skills/media-use/scripts/resolve.mjs"),
-                            os.path.join(CM.ROOT, ".claude/skills/media-use/scripts/resolve.mjs"),
-                            os.path.expanduser("~/.claude/skills/media-use/scripts/resolve.mjs"),
-                            os.path.expanduser("~/.agents/skills/media-use/scripts/resolve.mjs"))
-                if os.path.exists(p)), None)
+RESOLVE = next((os.path.join(b, "skills", "media-use", "scripts", "resolve.mjs")
+                for b in (os.path.join(CM.ROOT, ".agents"), os.path.join(CM.ROOT, ".claude"))
+                + tuple(os.path.join(os.path.expanduser("~"), d) for d in (".claude", ".agents", ".codex", ".cursor"))
+                if os.path.exists(os.path.join(b, "skills", "media-use", "scripts", "resolve.mjs"))), None)
 OWN = os.path.join(CM.ROOT, "studio", "music")
 TARGET_LUFS = -20          # файл; после carve+мягкого дака в миксе ≈ −24 (8–9 дБ под голосом −15)
 
@@ -71,13 +70,13 @@ def tempo_distance(bpm, target):
 
 # ---------- темп ролика ----------
 def target_bpm(proj):
-    words = json.load(open(os.path.join(proj, "words.json")))
+    words = json.load(open(os.path.join(proj, "words.json"), encoding="utf-8"))
     dur = words[-1]["end"] - words[0]["start"]
     wps = len(words) / max(1, dur)
     cuts = 0
     sp = os.path.join(proj, "shotlist.json")
     if os.path.exists(sp):
-        cuts = len(json.load(open(sp)).get("scenes", [])) + len(json.load(open(sp)).get("punches", []))
+        cuts = len(json.load(open(sp, encoding="utf-8")).get("scenes", [])) + len(json.load(open(sp, encoding="utf-8")).get("punches", []))
     cpm = cuts / max(1, dur) * 60
     bpm = 88 + (wps - 2.0) * 18 + cpm * 0.45
     return int(max(92, min(128, round(bpm)))), round(wps, 2), round(cpm, 1)
@@ -126,13 +125,13 @@ def mood_for(bpm):
 def heygen_ready():
     """HeyGen CLI установлен и вход выполнен (каталог музыки идёт через него)."""
     import shutil
-    hg = shutil.which("heygen") or os.path.expanduser("~/.local/bin/heygen")
+    hg = shutil.which("heygen") or os.path.join(os.path.expanduser("~"), ".local", "bin", CM.P.exe("heygen"))
     return os.path.exists(hg) and subprocess.run([hg, "auth", "status"], capture_output=True).returncode == 0
 
 
 def resolve_bgm(proj, intent):
     r = subprocess.run(["node", RESOLVE, "--type", "bgm", "--intent", intent, "--project", proj],
-                       capture_output=True, text=True, timeout=240)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=240)
     m = re.search(r"resolved \S+ → (\S+)", r.stdout + r.stderr)
     if not m:
         sys.stderr.write((r.stdout + r.stderr)[-600:] + "\n")
@@ -143,7 +142,7 @@ def resolve_bgm(proj, intent):
 
 def first_sound(path):
     out = subprocess.run(["ffmpeg", "-i", path, "-af", "silencedetect=noise=-40dB:d=0.3", "-f", "null", "-"],
-                         capture_output=True, text=True).stderr
+                         capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
     m = re.search(r"silence_start: (-?[\d.]+)\n.*?silence_end: ([\d.]+)", out, re.S)
     if m and float(m.group(1)) <= 0.05:
         return round(float(m.group(2)), 2)
@@ -205,7 +204,7 @@ def main():
         cands = own
         print(f"свои треки студии: {len(own)}")
     elif not RESOLVE or not heygen_ready():
-        raise SystemExit("нет треков: положи свою музыку в studio/music/ или подключи каталог HeyGen — ./setup.sh --heygen "
+        raise SystemExit("нет треков: положи свою музыку в studio/music/ или подключи каталог HeyGen — python3 setup.py --heygen "
                          "(вход через браузер). Ролик соберётся и без музыки")
     else:
         base = a.mood or snd.get("music_mood") or (sty["base"] if a.style != "electronic" else mood_for(tb))
@@ -223,7 +222,7 @@ def main():
     desc, tid = {}, {}
     man = os.path.join(proj, ".media", "manifest.jsonl")
     if os.path.exists(man):
-        for l in open(man):
+        for l in open(man, encoding="utf-8"):
             try:
                 e = json.loads(l)
                 desc[os.path.basename(e["path"])] = e.get("description", "")
@@ -237,7 +236,7 @@ def main():
         sp2 = os.path.join(vids, d, "shotlist.json")
         if d != os.path.basename(proj) and os.path.exists(sp2):
             try:
-                used.add(json.load(open(sp2)).get("music", {}).get("track_id", ""))
+                used.add(json.load(open(sp2, encoding="utf-8")).get("music", {}).get("track_id", ""))
             except Exception:
                 pass
     used.discard("")
@@ -264,10 +263,10 @@ def main():
     out = os.path.join(proj, "media", "music.mp3")
     render_track(src, st, vdur + 1, out)
     sp = os.path.join(proj, "shotlist.json")
-    sh = json.load(open(sp))
+    sh = json.load(open(sp, encoding="utf-8"))
     sh["music"] = {"src": "media/music.mp3", "volume": 1.0, "fade_in": 0.3, "fade_out": 1.2, "carve": 0.8,
                    "bpm": bpm, "style": a.style, "source": os.path.basename(src), "track_id": tid.get(os.path.basename(src), "")}
-    json.dump(sh, open(sp, "w"), ensure_ascii=False, indent=1)
+    json.dump(sh, open(sp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"→ media/music.mp3  ({bpm} BPM, {TARGET_LUFS} LUFS) — блок music записан в shotlist.json")
 
 

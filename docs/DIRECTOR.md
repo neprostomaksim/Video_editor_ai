@@ -5,7 +5,7 @@
 Выход — `shotlist.json`. Движок сам собирает ролик (`engine/build.py`). **Графику руками в HTML не пишем**: только
 JSON с выбором сцен и данными. Исключение — сцена `html` для уникальной метафоры.
 
-Параметры сцен: `python3 engine/catalog.py` (или `catalog.py list`).
+Параметры сцен: `python3 engine/catalog.py` — все сцены, `python3 engine/catalog.py <kind>` — одна (например, `catalog.py hook`).
 
 **Перед раскадровкой прочитай `studio/profile.md`**: тема, источник видео, стиль, CTA и прошлые правки клиента —
 их не повторяем.

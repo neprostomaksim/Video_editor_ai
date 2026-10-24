@@ -12,7 +12,7 @@
 Реестры: assets/logos/logos.json (встроенный, не трогаем) и studio/logos/logos.json (свои — сюда пишут sync/add/fetch).
 Свой логотип с тем же слагом перекрывает встроенный.
 """
-import json, os, re, shutil, sys, urllib.request
+import json, os, re, shutil, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.join(ROOT, "assets", "logos")
@@ -110,7 +110,7 @@ def sync():
         dst = slug + ".png"
         src = os.path.join(LOGO_DIR, fn)
         if fn != dst:
-            os.system(f'ffmpeg -v error -y -i "{src}" "{os.path.join(LOGO_DIR, dst)}"')
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, os.path.join(LOGO_DIR, dst)])
         e = reg.get(slug, {"name": os.path.splitext(fn)[0], "aliases": []})
         e.update(file=dst, orig=fn, source="client")
         reg[slug] = e
@@ -149,7 +149,7 @@ def add(slug, src, name, aliases="", bare=False, trim=0):
     vf = "format=rgba"
     if trim:
         vf = f"crop=iw*{1-2*trim/100}:ih*{1-2*trim/100},format=rgba"
-    os.system(f'ffmpeg -v error -y -i "{tmp}" -vf "{vf}" "{dst}"')
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", tmp, "-vf", vf, dst])
     os.remove(tmp)
     reg = own()
     e = reg.get(slug, {})

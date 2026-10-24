@@ -39,9 +39,9 @@ def top_level(s, cx):
     fit = s.get("fit", "contain" if frame != "none" else "cover")
     AH = cx.AH
     if frame == "none":
-        box, fr = (0, 0, W, AH), ""
+        box, fr = (0, cx.TOP, W, AH), ""
     else:
-        box = (0, 0, W, AH)
+        box = (0, cx.TOP, W, AH)
         fr = "frm"
     bar = ""
     if frame == "browser":

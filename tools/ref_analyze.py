@@ -21,7 +21,7 @@ import common as CM  # noqa: E402
 
 
 def sh(cmd, **kw):
-    return subprocess.run(cmd, capture_output=True, text=True, **kw)
+    return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", **kw)
 
 
 def main():
@@ -67,7 +67,7 @@ def main():
             segs.append((cur[0]["start"], cur[-1]["end"], " ".join(x["w"] for x in cur)))
     except SystemExit:
         print("⚠ речь донора не распознана — разбор только по кадрам")
-    open(os.path.join(out, "transcript.txt"), "w").write(
+    open(os.path.join(out, "transcript.txt"), "w", encoding="utf-8").write(
         "\n".join(f"{a_:6.2f}–{b_:6.2f}  {t}" for a_, b_, t in segs))
     for s in shots:
         s["text"] = " ".join(t for a_, b_, t in segs if a_ < s["end"] and b_ > s["start"])
@@ -80,10 +80,10 @@ def main():
             "-vf", "scale=360:-1", os.path.join(out, s["frame"])])
     cols = 6
     rows = (len(shots) + cols - 1) // cols
-    sh(["ffmpeg", "-v", "error", "-y", "-pattern_type", "glob", "-i", os.path.join(out, "shots", "*.jpg"),
-        "-vf", f"scale=240:-1,tile={cols}x{rows}", "-frames:v", "1", os.path.join(out, "sheet.jpg")])
+    CM.tile([os.path.join(out, s["frame"]) for s in shots], os.path.join(out, "sheet.jpg"),
+            f"scale=240:-1,tile={cols}x{rows}", ["-frames:v", "1"])
 
-    json.dump(shots, open(os.path.join(out, "shots.json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(shots, open(os.path.join(out, "shots.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     st = style_stats(a.ref, out, shots, segs, dur)
     md = [f"# Разбор референса: {os.path.basename(a.ref)} ({dur:.1f} c, {len(shots)} шотов)", "",
           "Контакт-лист: `ref/sheet.jpg` (слева направо, сверху вниз = порядок шотов).", "",
@@ -104,7 +104,7 @@ def main():
            "| переходы, наезды, эффекты | |",
            "| хук (первые 2 с): что на экране | |",
            "| финал/CTA | |"]
-    open(os.path.join(out, "analysis.md"), "w").write("\n".join(md) + "\n")
+    open(os.path.join(out, "analysis.md"), "w", encoding="utf-8").write("\n".join(md) + "\n")
     print(f"→ {out}/analysis.md, sheet.jpg ({len(shots)} шотов)")
 
 
@@ -117,8 +117,8 @@ def style_stats(ref, out, shots, segs, dur):
         sh(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", ref, "-frames:v", "1",
             "-vf", "scale=720:-2", os.path.join(fr, f"{k+1}_{t:.1f}.jpg")])
     pal = os.path.join(out, "palette.png")
-    sh(["ffmpeg", "-v", "error", "-y", "-pattern_type", "glob", "-i", os.path.join(fr, "*.jpg"),
-        "-vf", "scale=360:-2,tile=6x1,palettegen=max_colors=8:reserve_transparent=0:stats_mode=full", pal])
+    CM.tile([os.path.join(fr, f) for f in os.listdir(fr) if f.endswith(".jpg")], pal,
+            "scale=360:-2,tile=6x1,palettegen=max_colors=8:reserve_transparent=0:stats_mode=full")
     colors = []
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", pal, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
                          capture_output=True).stdout
@@ -132,7 +132,7 @@ def style_stats(ref, out, shots, segs, dur):
           "avg_shot": round(dur / max(1, len(shots)), 2),
           "cuts_per_min": round(max(0, len(shots) - 1) / max(1e-6, dur) * 60, 1),
           "wps": round(words / max(1e-6, dur), 2), "palette": colors}
-    json.dump(st, open(os.path.join(out, "style.json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(st, open(os.path.join(out, "style.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return st
 
 

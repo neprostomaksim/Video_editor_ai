@@ -15,7 +15,7 @@ TARGET, TP, TOL = -16.0, -1.5, 1.0
 def measure(path):
     err = subprocess.run(["ffmpeg", "-hide_banner", "-i", path, "-af",
                           f"loudnorm=I={TARGET}:TP={TP}:LRA=11:print_format=json", "-f", "null", "-"],
-                         capture_output=True, text=True).stderr
+                         capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
     return json.loads(re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", err, re.S).group(0))
 
 

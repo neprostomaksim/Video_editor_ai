@@ -83,8 +83,8 @@ def main():
     json.dump(sh, open(os.path.join(PROJ, "shotlist.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     run([sys.executable, os.path.join(CM.ROOT, "engine", "build.py"), PROJ, "--duration", "15"])
     pub = os.path.join(PROJ, "public")
-    run([os.path.join(CM.ROOT, "hf"), "snapshot", pub, "--at", ",".join(map(str, AT)), "--no-end",
-         "--describe", "false"], cwd=PROJ, stdout=subprocess.DEVNULL)
+    CM.hf(["snapshot", pub, "--at", ",".join(map(str, AT)), "--no-end", "--describe", "false"],
+          cwd=PROJ, stdout=subprocess.DEVNULL, check=True)
     sheet = os.path.join(pub, "snapshots", "contact-sheet.jpg")
     frames = sorted(f for f in os.listdir(os.path.join(pub, "snapshots")) if f.startswith("frame-"))
     out = os.path.join(CM.STUDIO, "preview.jpg")
@@ -97,7 +97,7 @@ def main():
         shutil.copy2(sheet, out)
     print(f"→ {out}  (кадры: хук · список · число · удар · титул · CTA)")
     if a.render:
-        run([os.path.join(CM.ROOT, "hf"), "render", pub, "-o", os.path.join(PROJ, "output.mp4"), "--fps", "25"], cwd=PROJ)
+        CM.hf(["render", pub, "-o", os.path.join(PROJ, "output.mp4"), "--fps", "25"], cwd=PROJ, check=True)
         print("→", os.path.join(PROJ, "output.mp4"))
 
 

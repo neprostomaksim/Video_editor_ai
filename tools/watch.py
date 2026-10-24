@@ -19,7 +19,7 @@ import common as CM  # noqa: E402
 
 
 def sh(cmd):
-    return subprocess.run(cmd, capture_output=True, text=True)
+    return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
 
 
 def fmt(t):
@@ -101,9 +101,8 @@ def main():
         if os.path.exists(fp):
             frames.append((t, fp))
     cols = 6 if h > w else 4
-    sh(["ffmpeg", "-v", "error", "-y", "-pattern_type", "glob", "-i", os.path.join(out, "frames", "*.jpg"),
-        "-vf", f"scale=240:-2,tile={cols}x{(len(frames) + cols - 1) // cols}:padding=4", "-frames:v", "1",
-        os.path.join(out, "sheet.jpg")])
+    CM.tile([fp for _, fp in frames], os.path.join(out, "sheet.jpg"),
+            f"scale=240:-2,tile={cols}x{(len(frames) + cols - 1) // cols}:padding=4", ["-frames:v", "1"])
     lines = []
     if not a.no_speech:
         try:

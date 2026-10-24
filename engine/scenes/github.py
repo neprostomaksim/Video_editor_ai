@@ -35,7 +35,7 @@ CSS = """
 def _meta(s, cx):
     owner, name = s["repo"].split("/", 1)
     base = os.path.join(cx.b.proj, "captures", "github", f"{owner}__{name}")
-    meta = json.load(open(base + ".json")) if os.path.exists(base + ".json") else {}
+    meta = json.load(open(base + ".json", encoding="utf-8")) if os.path.exists(base + ".json") else {}
     shot = base + ".png" if os.path.exists(base + ".png") else None
     return owner, name, meta, shot
 

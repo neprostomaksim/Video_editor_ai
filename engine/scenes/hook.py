@@ -142,7 +142,8 @@ def top_level(s, cx):
         el = (f'<video id="{cx.id}-hv" src="{url}" muted playsinline data-start="{cx.t0}" data-duration="{q(cx.dur)}" '
               f'data-media-start="{s.get("media_start", 0)}" data-track-index="2"></video>')
     vis = "" if cx.t0 < 0.05 else "visibility:hidden;"      # хук в 0 — виден с первого кадра
-    return f'<div class="hookmedia" id="{cx.id}-hm" style="width:1080px;height:{h}px;{vis}">{el}</div>'
+    top = 0 if _style(s) == "result" else cx.TOP
+    return f'<div class="hookmedia" id="{cx.id}-hm" style="top:{top}px;width:1080px;height:{h}px;{vis}">{el}</div>'
 
 
 def animate(s, cx, tl):

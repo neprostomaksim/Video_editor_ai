@@ -7,7 +7,7 @@
 // Шрифты движка: url('<относит.путь>/assets/fonts/…') или системные.
 import path from "node:path";
 import puppeteer from "puppeteer-core";
-import { findChrome } from "./chrome.mjs";
+import { findChrome, fileUrl } from "./chrome.mjs";
 
 const a = process.argv.slice(2);
 const [inp, out] = a;
@@ -20,7 +20,7 @@ const b = await puppeteer.launch({ executablePath: findChrome(),
 try {
   const p = await b.newPage();
   await p.setViewport({ width: W, height: H, deviceScaleFactor: scale });
-  await p.goto("file://" + path.resolve(inp), { waitUntil: "load" });
+  await p.goto(fileUrl(inp), { waitUntil: "load" });
   await p.evaluate(() => document.fonts && document.fonts.ready);
   await new Promise((r) => setTimeout(r, 300));
   await p.screenshot({ path: out });

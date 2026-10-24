@@ -182,7 +182,7 @@ def apply(raw, proj):
         cat += f"[v{i}][a{i}]"
     fc.append(f"{cat}concat=n={len(keep)}:v=1:a=1[v][a]")
     script = os.path.join(src, ".filter.txt")
-    open(script, "w").write(";\n".join(fc))
+    open(script, "w", encoding="utf-8").write(";\n".join(fc))
     out = os.path.join(src, "clean.mp4")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", raw, "-filter_complex_script", script, "-map", "[v]", "-map", "[a]",
                     "-c:v", "libx264", "-crf", "17", "-preset", "medium", "-pix_fmt", "yuv420p",
@@ -192,7 +192,7 @@ def apply(raw, proj):
     for s, e in keep[:-1]:
         t += e - s
         joints.append(round(t, 3))
-    json.dump(joints, open(os.path.join(proj, "cuts.json"), "w"))
+    json.dump(joints, open(os.path.join(proj, "cuts.json"), "w", encoding="utf-8"))
     new = sum(e - s for s, e in keep)
     print(f"→ {out}: {dur:.1f} c → {new:.1f} c, склеек {len(joints)} (cuts.json — для jump-cut наездов)")
     print(f"дальше: python3 tools/transcribe.py {out} {proj}")

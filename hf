@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
-# HyperFrames — движок анимации и рендера (open-source, Apache-2.0, от HeyGen).
-# Версия закреплена в tools/package.json и ставится ./setup.sh в tools/node_modules.
+# HyperFrames CLI (macOS/Linux). То же самое на любой системе: python3 hf.py … (Windows: python hf.py или hf.cmd)
 #   ./hf check videos/<slug>/public
 #   ./hf snapshot videos/<slug>/public --at 0,3,6 --describe false
 #   ./hf render videos/<slug>/public -o videos/<slug>/output.mp4 --fps 25
-# Видит ffmpeg/ffprobe/yt-dlp из ./bin, если в системе их нет.
-ROOT="$(cd "$(dirname "$0")" && pwd)"
-export PATH="$ROOT/bin:$PATH"
-export HYPERFRAMES_NO_UPDATE_CHECK=1
-LOCAL="$ROOT/tools/node_modules/.bin/hyperframes"
-if [ -x "$LOCAL" ]; then exec "$LOCAL" "$@"; fi
-exec npx --yes hyperframes@0.8.138 "$@"
+exec python3 "$(cd "$(dirname "$0")" && pwd)/hf.py" "$@"
