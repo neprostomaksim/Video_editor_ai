@@ -18,13 +18,13 @@ from core import esc, W, q, words_html
 KIND = "video"
 CSS = """
 .s-video .bgv{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 30%,#2a2a30 0%,#0b0b0c 70%);}
-.broll .frm{position:absolute;border-radius:28px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.35);display:flex;flex-direction:column;}
+.broll .frm{position:absolute;border-radius:28px;overflow:hidden;background:#000;box-shadow:var(--card_shadow,0 30px 80px rgba(0,0,0,.35));display:flex;flex-direction:column;}
 .broll .brbar{height:60px;flex:none;display:flex;align-items:center;gap:12px;padding:0 22px;background:#EDEDED;}
 .broll .brbar i{width:16px;height:16px;border-radius:50%;display:block;}
 .broll .brbar .u{margin-left:14px;flex:1;height:36px;border-radius:12px;background:#fff;font-family:'Mono',monospace;font-size:22px;color:#555;display:flex;align-items:center;padding:0 16px;}
 .broll .frm video{flex:1;min-height:0;width:100%;}
 .broll .vlab{position:absolute;left:0;right:0;display:flex;justify-content:center;z-index:2;}
-.broll .vlab .pill{font-size:44px;padding:16px 36px;box-shadow:0 14px 40px rgba(0,0,0,.4);}
+.broll .vlab .pill{font-size:44px;padding:16px 36px;box-shadow:var(--card_shadow,0 14px 40px rgba(0,0,0,.4));}
 .broll .vlab .pill .acc{color:var(--accent_ink);}
 """
 

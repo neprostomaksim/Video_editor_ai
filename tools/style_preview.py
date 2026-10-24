@@ -5,7 +5,7 @@
   python3 tools/style_preview.py --video talk.mp4   # на любом видео спикера
   python3 tools/style_preview.py --render           # + отрендерить сам демо-ролик (videos/_style-preview/output.mp4)
 
-Результат: studio/preview.jpg — хук, split-сцена со списком, полноэкранное число, удар на лицо с титулом,
+Результат: studio/preview.jpg — заголовок, список (графика сверху), число на весь экран, приближение с титулом,
 субтитры во всех раскладках, CTA. Показываем клиенту → правим studio/studio.json → запускаем снова.
 """
 import argparse, json, os, shutil, subprocess, sys
@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as CM  # noqa: E402
 
 PROJ = os.path.join(CM.ROOT, "videos", "_style-preview")
-DEMO = ("Вот как будут выглядеть твои ролики. Сначала хук, потом три главных пункта: первый, второй, третий. "
-        "Дальше крупная цифра на весь экран — девяносто процентов. А это удар на лицо, чтобы держать внимание. "
+DEMO = ("Вот как будут выглядеть твои ролики. Сначала заголовок, потом три главных пункта: первый, второй, третий. "
+        "Дальше крупная цифра на весь экран — девяносто процентов. А это приближение к лицу, чтобы держать внимание. "
         "И в конце призыв: напиши слово СТИЛЬ в комментарии.")
 AT = [1.2, 6.2, 8.9, 10.0, 11.6, 14.2]
 
@@ -43,12 +43,12 @@ def shotlist(st):
         "scenes": [
             {"kind": "hook", "style": "face", "start": 0, "end": 3.0, "kicker": "ПРИМЕРКА СТИЛЯ",
              "lines": ["твой ролик", "*в твоём стиле*"], "proof": f"акцент {acc}"},
-            {"kind": "list", "start": 3.0, "end": 7.0, "kicker": "split-сцена", "heading": "Три главных пункта",
+            {"kind": "list", "start": 3.0, "end": 7.0, "kicker": "графика сверху", "heading": "Три главных пункта",
              "items": [{"text": "Первый", "icon": "num", "t": 3.6}, {"text": "Второй", "icon": "num", "t": 4.6},
                        {"text": "Третий — *акцент*", "icon": "check", "t": 5.6}]},
             {"kind": "number", "layout": "full", "start": 7.0, "end": 9.3, "value": 90, "suffix": "%",
-             "label": "полноэкранная графика", "sub": "цифра со *счётчиком*"},
-            {"kind": "title", "start": 11.0, "end": 13.0, "kicker": "УДАР", "lines": ["держим", "внимание"]},
+             "label": "картинка на весь экран", "sub": "цифра со *счётчиком*"},
+            {"kind": "title", "start": 11.0, "end": 13.0, "kicker": "ПРИБЛИЖЕНИЕ", "lines": ["держим", "внимание"]},
         ],
     }
 
@@ -78,6 +78,13 @@ def main():
              "-g", "25", "-c:a", "aac", "-shortest", os.path.join(PROJ, "public", "input-video.mp4")])
         json.dump(synth_words(), open(os.path.join(PROJ, "words.json"), "w", encoding="utf-8"), ensure_ascii=False)
     sh = shotlist(st)
+    mo = st.get("montage", {})
+    if not mo.get("hook", True):                  # без заголовка в начале — первый кадр: спикер с субтитрами
+        sh["scenes"] = [x for x in sh["scenes"] if x["kind"] != "hook"]
+    if mo.get("pace") == "none":                  # без графики: только спикер, субтитры, склейки (и CTA)
+        sh["scenes"], sh["punches"] = [], []
+    if not st.get("cta", {}).get("enabled", True):
+        sh.pop("cta", None)
     if not st.get("sound", {}).get("sfx", True):
         sh["sfx"] = {"enabled": False}
     json.dump(sh, open(os.path.join(PROJ, "shotlist.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
@@ -95,7 +102,7 @@ def main():
         run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[o]", "-q:v", "3", out])
     elif os.path.exists(sheet):
         shutil.copy2(sheet, out)
-    print(f"→ {out}  (кадры: хук · список · число · удар · титул · CTA)")
+    print(f"→ {out}  (кадры: начало · список · число · приближение · титул · призыв)")
     if a.render:
         CM.hf(["render", pub, "-o", os.path.join(PROJ, "output.mp4"), "--fps", "25"], cwd=PROJ, check=True)
         print("→", os.path.join(PROJ, "output.mp4"))

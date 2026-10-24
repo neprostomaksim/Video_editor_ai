@@ -15,7 +15,7 @@ CSS = """
 .s-list .hd{margin-bottom:14px;}
 .s-list .hd .kick{margin-bottom:10px;}
 .s-list .it{display:flex;align-items:center;gap:26px;opacity:0;}
-.s-list .cards .it{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:24px 30px;box-shadow:0 8px 24px rgba(0,0,0,.05);}
+.s-list .cards .it{background:var(--card_fill,var(--card));border:var(--card_border,1px solid var(--line));border-radius:26px;padding:24px 30px;box-shadow:var(--card_shadow,0 8px 24px rgba(0,0,0,.05));backdrop-filter:var(--card_blur,none);}
 .s-list.bg-dark .cards .it{background:#16161a;border-color:#26262b;}
 .s-list .ic{flex:none;width:66px;height:66px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:38px;}
 .s-list .ic.check{background:var(--accent);color:var(--accent_ink);}

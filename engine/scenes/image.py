@@ -20,7 +20,7 @@ CSS = """
 .s-image .zoom{position:absolute;inset:0;}
 .s-image .zoom > img{position:absolute;inset:0;width:100%;height:100%;}
 .s-image .box{position:absolute;left:50px;right:50px;top:70px;bottom:70px;display:flex;align-items:center;justify-content:center;}
-.s-image .frm{max-width:100%;max-height:100%;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.30);display:flex;flex-direction:column;}
+.s-image .frm{max-width:100%;max-height:100%;border-radius:28px;overflow:hidden;background:#fff;box-shadow:var(--card_shadow,0 30px 80px rgba(0,0,0,.30));display:flex;flex-direction:column;}
 .s-image .frm img{display:block;max-width:980px;max-height:100%;object-fit:contain;}
 .s-image .frm.phone{border-radius:56px;border:14px solid #111;}
 .s-image .brbar{height:64px;flex:none;display:flex;align-items:center;gap:12px;padding:0 22px;background:#EDEDED;}

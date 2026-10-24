@@ -38,5 +38,7 @@
   "source": {"type": "talking_head", "full_pos": "50% 24%", "split_pos": "50% 40%", "face_top": 540,
              "jumpcuts": true, "jump_scale": 1.1},
   "sound": {"sfx": true, "sfx_volume": 1.0, "music": true, "music_style": "electronic", "music_mood": ""},
-  "montage": {"pace": "standard", "hook_style": "split", "split": true, "full_graphics": true, "punches": true}
+  "motion": {"feel": "smooth", "speed": 1.0},
+  "surface": {"kind": "shadow", "border_color": "ink", "border_width": 2},
+  "montage": {"pace": "standard", "hook": true, "hook_style": "split", "split": true, "full_graphics": true, "punches": true}
 }

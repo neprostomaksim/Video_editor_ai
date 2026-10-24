@@ -52,7 +52,8 @@ class Build:
         self.fps = int(self.shot.get("fps", 25))
         sh = self.shot
         self.st = C.deep_merge(C.STYLE, {"colors": sh.get("theme", {}), "captions": sh.get("captions", {}),
-                                         "cta": sh.get("cta_style", {}), "source": sh.get("avatar", {})})
+                                         "cta": sh.get("cta_style", {}), "source": sh.get("avatar", {}),
+                                         "motion": sh.get("motion", {}), "surface": sh.get("surface", {})})
         self.theme = self.st["colors"]
         self.av = self.st["source"]
         if not C.STYLE.get("_configured"):
@@ -165,7 +166,7 @@ class Build:
             if cta["start"] >= self.dur - 0.1:
                 cta = None
 
-        tl = C.TL(self.fps)
+        tl = C.TL(self.fps, self.st.get("motion"))      # характер движения студии
         body, top_level, css_kinds = [], [], {}
 
         # --- сцены

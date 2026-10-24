@@ -8,6 +8,9 @@
   js     анимация; доступны: tl (GSAP-таймлайн), S(sel) — селектор внутри сцены,
          t0/t1 — начало/конец сцены (глобальные секунды). Никакого Math.random/Date.
 Правила: только цвета/шрифты темы (var(--accent), var(--ink), 'Head', 'Body', 'Mono'), одна идея, ≤ 3–4 элемента.
+Карточки — в виде студии: background:var(--card_fill,var(--card)); border:var(--card_border,1px solid var(--line));
+box-shadow:var(--card_shadow,<своя тень>); backdrop-filter:var(--card_blur,none). Появления — через tl с ease
+back.out/power*.out, как в сценах (характер движения студии к ним в js не применяется — держи его сам: studio motion.feel).
 Удачную свободную сцену — выносить в отдельный модуль библиотеки.
 """
 import re

@@ -21,7 +21,7 @@ CSS = """
 .s-github .hl{position:absolute;border:5px solid var(--accent);border-radius:14px;box-shadow:0 0 0 9999px rgba(0,0,0,.0);opacity:0;}
 .s-github .dim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,17,23,0) 30%,rgba(13,17,23,.88) 78%);opacity:0;}
 .s-github .badge{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;}
-.s-github .badge .pill{font-size:88px;padding:20px 48px;gap:18px;box-shadow:0 20px 50px rgba(0,0,0,.45);}
+.s-github .badge .pill{font-size:88px;padding:20px 48px;gap:18px;box-shadow:var(--card_shadow,0 20px 50px rgba(0,0,0,.45));}
 .s-github .badge .pill .st{font-size:78px;}
 .s-github .badge .lbl{font-weight:700;font-size:36px;color:#E6EDF3;letter-spacing:.02em;text-shadow:0 2px 10px rgba(0,0,0,.6);}
 /* фолбэк-карточка без скрина */

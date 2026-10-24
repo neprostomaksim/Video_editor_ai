@@ -6,7 +6,10 @@
 
 Сцена — модуль в engine/scenes/ с атрибутами:
     KIND   — имя типа ("github", "terminal", …)
-    CSS    — стили (префикс .s-<kind>); цвета — только var(--accent), var(--ink) и др. токены, шрифты 'Head'/'Body'/'Mono'
+    CSS    — стили (префикс .s-<kind>); цвета — только var(--accent), var(--ink) и др. токены, шрифты 'Head'/'Body'/'Mono';
+             карточки — var(--card_shadow, <тень>), var(--card_border, <рамка>), var(--card_fill, …), var(--card_blur, none)
+             (вид карточек студии, surface_vars). Появления — tl.from_/to/fromTo с ease back.out/power*.out:
+             таймлайн сам переводит их в характер движения студии (FEELS)
     render(s, cx) -> str       HTML внутри хоста сцены
     animate(s, cx, tl)         анимация (глобальное время, секунды)
     top_level(s, cx) -> str    (необязательно) HTML вне хоста — для <video> b-roll
@@ -72,14 +75,56 @@ def color(v, colors):
     return colors.get(v, v) if isinstance(v, str) else v
 
 
-class TL:
-    """Собирает строки JS для одного paused-таймлайна GSAP."""
+# Характер движения студии (motion.feel): сцены пишут «вылеты» как обычно (back.out — с отскоком, power*.out —
+# доезжает), а таймлайн переводит их в характер клиента: (во что превращается back, во что — out, множитель длительности).
+FEELS = {
+    "bouncy": (None, None, 1.0),                  # как написано в сценах: выпрыгивает и пружинит
+    "smooth": ("power3.out", None, 1.0),          # плавно доезжает, без отскока
+    "snappy": ("expo.out", "expo.out", .7),       # резко и коротко
+    "calm":   ("sine.out", "sine.out", 1.4),      # медленно и спокойно
+}
+_OUT = re.compile(r"(power\d|expo|circ|sine|quad|cubic|quart)\.out")
 
-    def __init__(self, fps=25):
+
+class TL:
+    """Собирает строки JS для одного paused-таймлайна GSAP.
+    motion — блок стиля {"feel": "smooth", "speed": 1.0}: характер появлений (FEELS) и общая скорость.
+    Меняется только «как» (ease, длительность вылета ≤ 1 с, stagger), но не «когда»: время на таймлайне то же."""
+
+    def __init__(self, fps=25, motion=None):
         self.lines, self.fps = [], fps
+        m = motion or {}
+        self.feel = FEELS.get(m.get("feel", "bouncy"), FEELS["bouncy"])
+        self.speed = max(.25, float(m.get("speed", 1.0) or 1.0))
 
     def _t(self, t):
         return q(max(0.0, t), self.fps)
+
+    def _mv(self, v):
+        """Перевести одно появление в характер студии."""
+        back, out, k = self.feel
+        if not isinstance(v, dict) or (back is None and out is None and k == 1.0 and self.speed == 1.0):
+            return v
+        e = v.get("ease", "power1.out")
+        if not isinstance(e, str):
+            return v
+        if e.startswith("back.out"):
+            kind = "back"
+        elif _OUT.fullmatch(e):
+            kind = "out"
+        else:
+            return v                                # none / inOut / in — камера, циклы, уходы: не трогаем
+        v = dict(v)
+        new = back if kind == "back" else out
+        if new:
+            v["ease"] = new
+        f = k / self.speed
+        d = v.get("duration")
+        if isinstance(d, (int, float)) and d <= 1.0:
+            v["duration"] = round(d * f, 3)
+        if isinstance(v.get("stagger"), (int, float)):
+            v["stagger"] = round(v["stagger"] * f, 3)
+        return v
 
     def raw(self, code):
         self.lines.append(code)
@@ -88,13 +133,13 @@ class TL:
         self.raw(f"tl.set({js(sel)},{js(v)},{self._t(t)});")
 
     def to(self, sel, v, t):
-        self.raw(f"tl.to({js(sel)},{js(v)},{self._t(t)});")
+        self.raw(f"tl.to({js(sel)},{js(self._mv(v))},{self._t(t)});")
 
     def from_(self, sel, v, t):
-        self.raw(f"tl.from({js(sel)},{js(v)},{self._t(t)});")
+        self.raw(f"tl.from({js(sel)},{js(self._mv(v))},{self._t(t)});")
 
     def fromTo(self, sel, a, b, t):
-        self.raw(f"tl.fromTo({js(sel)},{js(a)},{js(b)},{self._t(t)});")
+        self.raw(f"tl.fromTo({js(sel)},{js(a)},{js(self._mv(b))},{self._t(t)});")
 
     def count(self, sel, a, b, t, dur=1.2, decimals=0, prefix="", suffix="", ease="power2.out"):
         """Счётчик числа: 0 → 31 000 (разбивка разрядов по языку студии)."""
@@ -242,7 +287,27 @@ def theme_vars(st):
             cta.get("word_font", "mono"), "'Mono',monospace"),
         "split_radius": f'{st["layout"].get("split_radius", 44)}px',
     })
+    v.update(surface_vars(st.get("surface", {}), c))
     return v
+
+
+def surface_vars(sf, colors):
+    """Вид карточек студии (surface.kind). Сцены пишут var(--card_shadow, <своя тень>) и т.п.: у «shadow» переменные
+    не заданы — каждая сцена со своей тенью, как нарисована; остальные виды подменяют тень, рамку, заливку и размытие.
+    Интерфейсы сервисов (чат, терминал, код, настройки) переменные не используют — остаются в родном виде."""
+    kind = sf.get("kind", "shadow")
+    none = "0 0 0 transparent"                    # не «none»: тень бывает в списке вместе с кольцом акцента
+    border = f'{int(sf.get("border_width", 2))}px solid {color(sf.get("border_color", "ink"), colors)}'
+    out = {
+        "shadow": {},
+        "flat": {"card_shadow": none},
+        "outline": {"card_shadow": none, "card_border": border},
+        "glass": {"card_shadow": "0 20px 50px rgba(0,0,0,.14)", "card_border": "1.5px solid rgba(255,255,255,.65)",
+                  "card_fill": "rgba(255,255,255,.55)", "card_blur": "blur(18px) saturate(1.4)"},
+    }.get(kind, {})
+    if sf.get("shadow"):
+        out["card_shadow"] = sf["shadow"]
+    return out
 
 
 BASE_CSS = """
@@ -260,7 +325,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
 .broll video{width:100%;height:100%;}
 /* логотип-плитка */
 .logo{position:relative;display:inline-block;flex:none;border-radius:22.5%;overflow:hidden;background:#fff;
-  box-shadow:0 10px 30px rgba(0,0,0,.10),0 2px 6px rgba(0,0,0,.06);}
+  box-shadow:var(--card_shadow,0 10px 30px rgba(0,0,0,.10),0 2px 6px rgba(0,0,0,.06));}
 .logo img{display:block;width:100%;height:100%;object-fit:cover;}
 .logo.mark img{object-fit:contain;padding:17%;}
 .logo.bare{background:transparent;box-shadow:none;border-radius:0;overflow:visible;filter:drop-shadow(0 14px 30px rgba(0,0,0,.28));}

@@ -15,9 +15,9 @@ CSS = """
 .s-compare .wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 44px;gap:40px;}
 .s-compare .head{text-align:center;font-size:62px;}
 .s-compare .row{display:flex;align-items:stretch;gap:22px;}
-.s-compare .side{flex:1;background:var(--card);border:2px solid var(--line);border-radius:30px;padding:36px 26px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.06);}
+.s-compare .side{flex:1;background:var(--card_fill,var(--card));border:var(--card_border,2px solid var(--line));backdrop-filter:var(--card_blur,none);border-radius:30px;padding:36px 26px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;box-shadow:var(--card_shadow,0 12px 30px rgba(0,0,0,.06));}
 .s-compare.bg-dark .side{background:#16161a;border-color:#26262b;}
-.s-compare .side.win{border-color:var(--ink);box-shadow:0 0 0 6px var(--accent),0 16px 40px rgba(0,0,0,.12);}
+.s-compare .side.win{border-color:var(--ink);box-shadow:0 0 0 6px var(--accent),var(--card_shadow,0 16px 40px rgba(0,0,0,.12));}
 .s-compare .ti{font-weight:800;font-size:46px;line-height:1.05;}
 .s-compare .va{font-weight:800;font-size:76px;line-height:1;letter-spacing:-.02em;}
 .s-compare .sb{font-weight:600;font-size:28px;color:var(--muted);line-height:1.25;}

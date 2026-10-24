@@ -17,7 +17,7 @@ CSS = """
 .s-product .nm{font-weight:800;font-size:108px;line-height:1;letter-spacing:-.02em;}
 .s-product .tg{font-weight:500;font-size:38px;line-height:1.3;color:var(--muted);max-width:900px;}
 .s-product .chips{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
-.s-product .chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:12px 26px;font-weight:700;font-size:28px;letter-spacing:.04em;text-transform:uppercase;color:#3b3b36;}
+.s-product .chip{border:var(--card_border,2px solid var(--line));background:var(--card_fill,var(--card));backdrop-filter:var(--card_blur,none);border-radius:999px;padding:12px 26px;font-weight:700;font-size:28px;letter-spacing:.04em;text-transform:uppercase;color:#3b3b36;}
 .s-product.bg-dark .tg{color:#A6A6A0;} .s-product.bg-dark .chip{background:#17171a;border-color:#2a2a2e;color:#ddd;}
 """
 

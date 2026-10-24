@@ -13,7 +13,7 @@ DEFAULT_LAYOUT = "overlay"
 CSS = """
 .s-sting .st{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:18px;}
 .s-sting .nm{font-weight:800;font-size:64px;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.7);}
-.s-sting .logo{box-shadow:0 20px 60px rgba(0,0,0,.45);}
+.s-sting .logo{box-shadow:var(--card_shadow,0 20px 60px rgba(0,0,0,.45));}
 """
 
 

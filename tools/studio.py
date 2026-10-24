@@ -129,6 +129,13 @@ def check():
     if cap.get("style") not in ("box", "highlight", "outline", "word"):
         print("⚠ captions.style: box | highlight | outline | word")
         ok = False
+    from core import FEELS      # noqa: E402
+    for key, val, allowed in (("motion.feel", st.get("motion", {}).get("feel"), tuple(FEELS)),
+                              ("surface.kind", st.get("surface", {}).get("kind"), ("shadow", "flat", "outline", "glass")),
+                              ("montage.pace", st.get("montage", {}).get("pace"), ("none", "minimal", "standard", "dynamic"))):
+        if val not in allowed:
+            print(f"⚠ {key} = {val!r} — нужно одно из: {' | '.join(allowed)}")
+            ok = False
     reg = font_registry()
     for role in ("head", "body", "mono"):
         if st["fonts"].get(role, "").lower() not in reg:
